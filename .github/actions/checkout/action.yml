@@ -1,0 +1,11 @@
+name: Checkout
+description: Checkout the repository
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout the source code from repository
+      uses: actions/checkout@v2
+
+    - name: Install the required packages including development dependencies
+      run: task install-dev
+      shell: bash

@@ -1,0 +1,16 @@
+[DESIGN]
+
+# Maximum number of locals for function / method body
+max-locals=35
+
+# Maximum number of arguments for function / method
+max-args=35
+
+# Maximum number of attributes
+max-attributes=35
+
+min-similarity-lines: 100
+
+[FORMAT]
+max-line-length=150
+max-module-lines=2000

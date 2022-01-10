@@ -1,0 +1,141 @@
+# https://taskfile.dev
+
+version: 3
+
+vars:
+  APPNAME: py-messenger
+  DEP: ./...
+  DOCKER_REG_PREFIX: docker.pkg.github.com
+  DOCKER_REG_USER: tombenke
+  IMAGE_TAG: latest
+  VERSION:
+    sh: git describe --tags --always --match v* ${GITHUB_REF}
+  GIT_HOOKS_DIR:
+    sh: echo "$(pwd)/.git/hooks"
+
+env:
+
+tasks:
+  default:
+    desc: Executes all the tests then build the binary.
+    cmds:
+      - task: test
+      - task: docs
+
+  format:
+    desc: Autoformat the source files
+    cmds:
+      - black .
+
+  test:
+    desc: Run all the tests.
+    cmds:
+      - task: format
+      - task: dc-upd
+      - python -m unittest discover ./messenger/tests/
+      - python -m unittest discover ./nats_messenger/tests/
+      - task: dc-down
+
+  test-verbose:
+    desc: Run all the go tests.
+    cmds:
+      - task: dc-upd
+      - task: format
+      - python -m unittest discover ./messenger/tests/ -v
+      - python -m unittest discover ./nats_messenger/tests/ -v
+      - task: dc-down
+
+  coverage:
+    desc: Test coverage
+    cmds:
+      - task: dc-upd
+      - coverage run -m unittest discover ./messenger/tests/ -v
+      - coverage run -m unittest discover ./nats_messenger/tests/ -v
+      - coverage html
+      - coverage report
+      - coverage-badge -f -o coverage.svg
+      - task: dc-down
+
+  lint:
+    desc: Run python linter
+    cmds:
+      - task: format
+      - pylint messenger/
+      - pylint nats_messenger/
+
+  pre-commit:
+    desc: Runs the QA tasks from a git pre-commit hook
+    cmds:
+      - task: lint
+      - task: coverage
+
+  install-git-hooks:
+    desc: Install git hooks
+    cmds:
+      - echo -e "#!/bin/bash\ntask pre-commit" > {{.GIT_HOOKS_DIR}}/pre-commit
+      - chmod ug+x {{.GIT_HOOKS_DIR}}/pre-commit
+
+  install:
+    desc: Install the package and its dependencies
+    cmds:
+      - pip install .
+      - task: install-git-hooks
+
+  install-dev:
+    desc: Install the package and its dependencies for development
+    cmds:
+      - pip install .[dev] .
+      - task: install-git-hooks
+
+  install-dev-editable:
+    desc: Install the package and its dependencies for development with editablility
+    cmds:
+      - pip install -e .[dev] .
+      - task: install-git-hooks
+
+  docs:
+    desc: Generate module documentation into the docs/ folder
+    cmds:
+      - echo {{.VERSION}}
+      - pdoc -o docs messenger/ --footer-text="py-messenger {{.VERSION}}"
+      #- pydeps --reverse --cluster -o docs/messenger.png -T png --no-show messenger/
+      #- pyreverse -my -o png --output-directory=./docs/ --project=messenger messenger/*.py
+
+  clean:
+    desc: Clean temporary files and folders
+    cmds:
+      - rm .coverage -f
+      - rm htmlcov -fr
+      - rm docs/* -fr
+
+
+  dc-up:
+    desc: Start docker containers
+    cmds:
+      - docker-compose -f docker-compose.test.yml up
+      - sleep 10
+
+  dc-upd:
+    desc: Start docker containers in the background
+    cmds:
+      - docker-compose -f docker-compose.test.yml up -d
+
+  dc-stop:
+    desc: Stop docker containers
+    cmds:
+      - docker-compose stop
+
+  dc-logs:
+    desc: Get all docker container logs
+    cmds:
+      - docker-compose -f docker-compose.test.yml logs
+
+  dc-logsf:
+    desc: Get all docker container logs and follow
+    cmds:
+      - docker-compose -f docker-compose.test.yml logs -f
+
+  dc-down:
+    desc: Clean up docker containers
+    cmds:
+      - docker-compose -f docker-compose.test.yml down --volumes --remove-orphans

@@ -10,4 +10,8 @@ It defines a generic interface to open the connection to the queues and topics o
 The implementation relies on the following technologies:
 - [NATS](https://nats.io/),
 - [NATS streaming](https://nats.io/download/nats-io/nats-streaming-server/).
+- [NATS - Python3 Client for Asyncio](https://github.com/nats-io/nats.py) An asyncio Python client for the NATS messaging system.
+- [NATS Streaming Python3/Asyncio Client](https://github.com/nats-io/stan.py) An asyncio based Python3 client for the NATS Streaming messaging system platform.
+- [NATS - Python3 Client for Asyncio](https://github.com/nats-io/nats.py)
+- [nats.py v2.0.0 - docs](https://nats-io.github.io/nats.py/releases/v2.0.0.html)
 

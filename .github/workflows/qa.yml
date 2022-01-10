@@ -1,0 +1,72 @@
+name: QA
+
+on:
+  workflow_call:
+
+jobs:
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - id: setup
+        uses: tombenke/py-messenger/.github/actions/setup@v0.3.0
+
+      - id: checkout
+        uses: tombenke/py-messenger/.github/actions/checkout@v0.3.0
+
+      - name: Run coverage task
+        run: task coverage
+
+      - name: Verify Changed files
+        uses: tj-actions/verify-changed-files@v6
+        id: changed_files
+        with:
+          files: coverage.svg
+
+      - name: Commit files
+        if: steps.changed_files.outputs.files_changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add coverage.svg
+          git commit -m "Updated coverage.svg"
+
+      - name: Push changes
+        if: steps.changed_files.outputs.files_changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          branch: ${{ github.ref }}
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - id: setup
+        uses: tombenke/py-messenger/.github/actions/setup@v0.3.0
+
+      - id: checkout
+        uses: tombenke/py-messenger/.github/actions/checkout@v0.3.0
+
+      - name: Run lint task
+        run: task lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - id: setup
+        uses: tombenke/py-messenger/.github/actions/setup@v0.3.0
+
+      - id: checkout
+        uses: tombenke/py-messenger/.github/actions/checkout@v0.3.0
+
+      - name: Run test task
+        run: task test
+
+  qa:
+    runs-on: ubuntu-latest
+    needs: [coverage, lint, test]
+    steps:
+      - name: Run QA job
+        run: echo "QA workflow is successfully completed"
