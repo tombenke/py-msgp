@@ -21,6 +21,12 @@ class FakeMessenger(Messenger):
     def subscribe(self):
         pass
 
+    def request(self):
+        pass
+
+    def response(self):
+        pass
+
 
 class MessengerTestCase(unittest.TestCase):
     """The Messenger test cases"""

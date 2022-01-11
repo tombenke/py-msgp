@@ -22,7 +22,6 @@ REQUIRED = [
     "asyncio-nats-client",
     "asyncio-nats-streaming",
     "python-dotenv",
-    "loguru",
 ]
 
 TEST_REQUIREMENTS = [
@@ -32,6 +31,7 @@ TEST_REQUIREMENTS = [
     "pylint",
     "pdoc",
     "pydeps",
+    "loguru",
 ]
 
 setup(

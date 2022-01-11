@@ -98,6 +98,7 @@ tasks:
     cmds:
       - echo {{.VERSION}}
       - pdoc -o docs messenger/ --footer-text="py-messenger {{.VERSION}}"
+      - pdoc -o docs nats_messenger/ --footer-text="py-messenger/nats_messenger {{.VERSION}}"
       #- pydeps --reverse --cluster -o docs/messenger.png -T png --no-show messenger/
       #- pyreverse -my -o png --output-directory=./docs/ --project=messenger messenger/*.py
 
