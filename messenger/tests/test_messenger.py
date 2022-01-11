@@ -15,16 +15,28 @@ class FakeMessenger(Messenger):
     async def close(self):
         pass
 
-    def publish(self):
+    async def publish(self):
         pass
 
-    def subscribe(self):
+    async def subscribe(self):
         pass
 
-    def request(self):
+    async def request(self):
         pass
 
-    def response(self):
+    async def response(self):
+        pass
+
+    async def publish_durable(self):
+        pass
+
+    async def publish_async_durable(self):
+        pass
+
+    async def subscribe_durable(self):
+        pass
+
+    async def subscribe_durable_with_ack(self):
         pass
 
 

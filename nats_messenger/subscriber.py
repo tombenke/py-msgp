@@ -17,4 +17,7 @@ class Subscriber(subscriber.Subscriber):
 
     async def unsubscribe(self):
         """Unsubscribes from the topic"""
-        await self.client.unsubscribe(self.subscription)
+        if hasattr(self.subscription, "unsubscribe"):
+            await self.subscription.unsubscribe()
+        else:
+            await self.client.unsubscribe(self.subscription)

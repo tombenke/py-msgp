@@ -22,6 +22,7 @@ class Messenger(ABC):
         Closes the connection to the messaging middleware
         """
 
+    # Functions for non durable subjects
     @abstractmethod
     async def publish(self, subject: str, payload: bytes):
         """
@@ -58,4 +59,37 @@ class Messenger(ABC):
         with the inbound messages, then respond with the return value of the `service` function.
           :param subject: Subject that the service as a subscriber will observe.
           :param service_fun: a Callable function. Its return value will be the response.
+        """
+
+    # Functions for durable subjects
+    @abstractmethod
+    async def publish_durable(self, subject: str, payload: bytes):
+        """
+        Publishes `data` to the cluster into the `subject` and wait for an ACK.
+        """
+
+    @abstractmethod
+    async def publish_async_durable(
+        self, subject: str, payload: bytes, ack_handler: Callable[[bool], None]
+    ):
+        """
+        Publishes the `payload` to the `subject` topic and
+        asynchronously process the ACK or error state via the `ack_handler` callback function.
+        """
+
+    @abstractmethod
+    async def subscribe_durable(self, subject: str, callback: Callable[[bytes], None]):
+        """
+        Subscribes to the durable `subject`, and call `callback` with the received content.
+        Automatically acknowledges to the subject the take-over of the message.
+        """
+
+    @abstractmethod
+    async def subscribe_durable_with_ack(
+        self, subject: str, callback: Callable[[bytes, Callable[[], bool]], None]
+    ):
+        """
+        Subscribes to the durable `subject`, and call `callback` with the received content.
+        The second argument of the `callback` callback is the acknowledge callback function,
+        that has to be called by the consumer of the content.
         """

@@ -4,48 +4,37 @@ from loguru import logger
 
 import asyncio
 from nats_messenger.messenger import Messenger
+from nats_messenger.tests.config_test import *
 
 
-class MessengerTestCase(unittest.TestCase):
-    """The Messenger test cases"""
-
-    def test_open_close(self) -> None:
-        """Test the Messenger open and close methods"""
-
-        async def run():
-            messenger = Messenger("", "", "py-messenger-cluster", "client-123", logger)
-            await messenger.open()
-            await messenger.close()
-
-        asyncio.run(run())
-
-        self.assertTrue(True)
+class MessengerNonDurableTestCase(unittest.TestCase):
+    """The Messenger test cases for non-durable functions"""
 
     def test_publish_subscribe(self) -> None:
         """Test the Messenger's publish and subscribe methods"""
 
         async def run():
-            messenger = Messenger("", "", "py-messenger-cluster", "client-123", logger)
+            messenger = Messenger(URL, CREDENTIALS, CLUSTER_ID, CLIENT_ID, logger)
             await messenger.open()
             total_messages = 0
-            future = asyncio.Future()
+            callback_called = asyncio.Future()
 
             async def callback(msg: bytes):
                 nonlocal total_messages
-                nonlocal future
+                nonlocal callback_called
                 logger.debug(f"Received a message: '{msg}'")
                 total_messages += 1
                 if total_messages >= 2:
-                    future.set_result(None)
+                    callback_called.set_result(None)
 
-            subscriber = await messenger.subscribe("hi", callback=callback)
+            subscriber = await messenger.subscribe(TEST_TOPIC, callback=callback)
 
             logger.debug("Publish messages")
-            await messenger.publish("hi", b"hello")
-            await messenger.publish("hi", b"world")
+            await messenger.publish(TEST_TOPIC, TEST_PAYLOAD)
+            await messenger.publish(TEST_TOPIC, TEST_PAYLOAD)
 
             logger.debug("Wait for callbacks")
-            await asyncio.wait_for(future, 1)
+            await asyncio.wait_for(callback_called, 1)
 
             logger.debug("Unsubscribe")
             await subscriber.unsubscribe()
@@ -61,30 +50,31 @@ class MessengerTestCase(unittest.TestCase):
         """Test the Messenger's request and response methods"""
 
         async def run():
-            messenger = Messenger("", "", "py-messenger-cluster", "client-123", logger)
+            messenger = Messenger(URL, CREDENTIALS, CLUSTER_ID, CLIENT_ID, logger)
             await messenger.open()
             total_messages = 0
-            future = asyncio.Future()
+            callback_called = asyncio.Future()
             service_fun_response = b"service_fun response"
 
-            async def service_fun(msg: bytes) -> bytes:
+            async def service_fun(payload: bytes) -> bytes:
                 nonlocal total_messages
-                nonlocal future
-                logger.debug(f"Service function is called with message: '{msg}'")
+                nonlocal callback_called
+                logger.debug(f"Service function is called with message: '{payload}'")
+                self.assertEqual(TEST_PAYLOAD, payload)
                 total_messages += 1
                 if total_messages >= 2:
-                    future.set_result(None)
+                    callback_called.set_result(None)
                 return service_fun_response
 
-            subscriber = await messenger.response("hi", service_fun=service_fun)
+            subscriber = await messenger.response(TEST_TOPIC, service_fun=service_fun)
 
             logger.debug("Request messages")
-            response = await messenger.request("hi", b"hello", 1.0)
-            response = await messenger.request("hi", b"world", 1.0)
+            response = await messenger.request(TEST_TOPIC, TEST_PAYLOAD, 1.0)
+            response = await messenger.request(TEST_TOPIC, TEST_PAYLOAD, 1.0)
             self.assertEqual(service_fun_response, response)
 
             logger.debug("Wait for requests")
-            await asyncio.wait_for(future, 1)
+            await asyncio.wait_for(callback_called, 1)
 
             logger.debug("Unsubscribe")
             await subscriber.unsubscribe()

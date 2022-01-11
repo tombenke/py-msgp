@@ -85,7 +85,6 @@ class Messenger(messenger.Messenger):
             await callback(msg.data)
 
         subscription = await self.nats_conn.subscribe(subject=subject, cb=nats_callback)
-        self.logger.debug(f"subscription type: {type(subscription)}")
         subs = Subscriber(self.nats_conn, subscription)
         self.logger.debug(f"Subscribed to {subject} via subscriber: {subs}")
         return subs
@@ -123,7 +122,73 @@ class Messenger(messenger.Messenger):
             await self.nats_conn.publish(subject=msg.reply, payload=service_response)
 
         subscription = await self.nats_conn.subscribe(subject=subject, cb=nats_callback)
-        self.logger.debug(f"subscription type: {type(subscription)}")
         subs = Subscriber(self.nats_conn, subscription)
+        self.logger.debug(f"Subscribed to {subject} via subscriber: {subs}")
+        return subs
+
+    # Functions for durable subjects
+    async def publish_durable(self, subject: str, payload: bytes):
+        """
+        Publishes `data` to the cluster into the `subject` and wait for an ACK.
+        """
+        self.logger.debug(f"Publish to {subject} the payload '{payload}'")
+        await self.stan_conn.publish(subject=subject, payload=payload)
+
+    async def publish_async_durable(
+        self, subject: str, payload: bytes, ack_handler: Callable[[bool], None]
+    ):
+        """
+        Publishes the `payload` to the `subject` topic and
+        asynchronously process the ACK or error state via the `ack_handler` callback function.
+        """
+        self.logger.debug(
+            f"Publish to {subject} the payload '{payload}' asynchronously"
+        )
+        await self.stan_conn.publish(
+            subject=subject, payload=payload, ack_handler=ack_handler
+        )
+
+    async def subscribe_durable(self, subject: str, callback: Callable[[bytes], None]):
+        """
+        Subscribes to the durable `subject`, and call `callback` with the received content.
+        Automatically acknowledges to the subject the take-over of the message.
+        """
+
+        async def stan_callback(msg):
+            self.logger.debug(f"Subscription callback function is called with '{msg}'")
+            await callback(msg.data)
+
+        subscription = await self.stan_conn.subscribe(subject=subject, cb=stan_callback)
+        subs = Subscriber(self.stan_conn, subscription)
+        self.logger.debug(f"Subscribed to {subject} via subscriber: {subs}")
+        return subs
+
+    async def subscribe_durable_with_ack(
+        self, subject: str, callback: Callable[[bytes], None]
+    ):
+        """
+        Subscribes to the durable `subject`, and call `callback` with the received content.
+        The second argument of the `service_fun` callback is the acknowledge callback function,
+        that has to be called by the consumer of the content.
+        """
+
+        async def stan_callback(msg):
+            self.logger.debug(f"Subscription callback function is called with '{msg}'")
+            acknowledge = await callback(msg.data)
+            if acknowledge:
+                await self.stan_conn.ack(msg)
+                self.logger.debug(f"message {msg.sequence}, is acknowledged")
+            else:
+                self.logger.debug(f"message {msg.sequence}, is NOT acknowledged")
+
+        subscription = await self.stan_conn.subscribe(
+            subject=subject,
+            cb=stan_callback,
+            start_at="new_only",
+            durable_name="durable",
+            deliver_all_available=False,
+            manual_acks=True,
+        )
+        subs = Subscriber(self.stan_conn, subscription)
         self.logger.debug(f"Subscribed to {subject} via subscriber: {subs}")
         return subs
