@@ -3,23 +3,25 @@ import unittest
 import asyncio
 from loguru import logger
 from nats_messenger.messenger import Messenger
-from mpa.producer import MessageProducerActor
+from mpa.processor import MessageProcessorActor
 from mpa.tests.config_test import (
     URL,
     CREDENTIALS,
     CLUSTER_ID,
+    PRODUCER_CLIENT_ID,
     CONSUMER_CLIENT_ID,
-    PRODUCER_MPA_CLIENT_ID,
+    PROCESSOR_MPA_CLIENT_ID,
+    INBOUND_TOPIC,
     OUTBOUND_TOPIC,
     TEST_PAYLOAD,
 )
 
 
-class ProducerMPATestCase(unittest.TestCase):
-    """The Producer MPA test cases functions"""
+class ProcessorMPATestCase(unittest.TestCase):
+    """The Processor MPA test cases functions"""
 
-    def test_producer_actor(self) -> None:
-        """Test the MessageProducerActor"""
+    def test_processor_actor(self) -> None:
+        """Test the MessageProcessorActor"""
 
         async def run():
             logger.debug("Setup the test consumer")
@@ -41,7 +43,7 @@ class ProducerMPATestCase(unittest.TestCase):
             await consumer.open()
             await consumer.subscribe(OUTBOUND_TOPIC, callback=consumer_callback)
 
-            logger.debug("Setup the producer actor")
+            logger.debug("Setup the processor actor")
             total_messages = 0
             actor_function_called = asyncio.Future()
             actor_function_response = b"actor function response..."
@@ -50,7 +52,7 @@ class ProducerMPATestCase(unittest.TestCase):
                 nonlocal total_messages
                 nonlocal actor_function_called
                 logger.debug(
-                    f"Producer actor_function is called with message: '{payload}'"
+                    f"Processor actor_function is called with message: '{payload}'"
                 )
                 self.assertEqual(TEST_PAYLOAD, payload)
                 total_messages += 1
@@ -58,30 +60,39 @@ class ProducerMPATestCase(unittest.TestCase):
                     actor_function_called.set_result(None)
                 return actor_function_response
 
-            producer_actor = MessageProducerActor(
-                Messenger(URL, CREDENTIALS, CLUSTER_ID, PRODUCER_MPA_CLIENT_ID, logger),
+            processor_actor = MessageProcessorActor(
+                Messenger(
+                    URL, CREDENTIALS, CLUSTER_ID, PROCESSOR_MPA_CLIENT_ID, logger
+                ),
+                INBOUND_TOPIC,
                 OUTBOUND_TOPIC,
                 actor_function,
-                durable=False,
+                durable_in=False,
+                durable_out=False,
             )
-            await producer_actor.open()
+            await processor_actor.open()
 
-            logger.debug("Produce something")
-            await producer_actor.next(TEST_PAYLOAD)
-            await producer_actor.next(TEST_PAYLOAD)
+            logger.debug("Send something to consume")
+            producer = Messenger(
+                URL, CREDENTIALS, CLUSTER_ID, PRODUCER_CLIENT_ID, logger
+            )
+            await producer.open()
+            await producer.publish(INBOUND_TOPIC, TEST_PAYLOAD)
+            await producer.publish(INBOUND_TOPIC, TEST_PAYLOAD)
 
             logger.debug("Wait for actor function callback and consumer callback")
             await asyncio.wait_for(actor_function_called, 1)
             await asyncio.wait_for(consumer_callback_called, 1)
 
-            # Shut down the producer actor and the producer
-            await producer_actor.close()
+            # Shut down the processor actor, the consumer and the producer
+            await processor_actor.close()
             await consumer.close()
+            await producer.close()
 
         asyncio.run(run())
 
-    def test_producer_actor_durable(self) -> None:
-        """Test the MessageProducerActor using durable message channel"""
+    def test_processor_actor_durable(self) -> None:
+        """Test the MessageProcessorActor"""
 
         async def run():
             logger.debug("Setup the test consumer")
@@ -103,7 +114,7 @@ class ProducerMPATestCase(unittest.TestCase):
             await consumer.open()
             await consumer.subscribe_durable(OUTBOUND_TOPIC, callback=consumer_callback)
 
-            logger.debug("Setup the producer actor")
+            logger.debug("Setup the processor actor")
             total_messages = 0
             actor_function_called = asyncio.Future()
             actor_function_response = b"actor function response..."
@@ -112,7 +123,7 @@ class ProducerMPATestCase(unittest.TestCase):
                 nonlocal total_messages
                 nonlocal actor_function_called
                 logger.debug(
-                    f"Producer actor_function is called with message: '{payload}'"
+                    f"Processor actor_function is called with message: '{payload}'"
                 )
                 self.assertEqual(TEST_PAYLOAD, payload)
                 total_messages += 1
@@ -120,24 +131,33 @@ class ProducerMPATestCase(unittest.TestCase):
                     actor_function_called.set_result(None)
                 return actor_function_response
 
-            producer_actor = MessageProducerActor(
-                Messenger(URL, CREDENTIALS, CLUSTER_ID, PRODUCER_MPA_CLIENT_ID, logger),
+            processor_actor = MessageProcessorActor(
+                Messenger(
+                    URL, CREDENTIALS, CLUSTER_ID, PROCESSOR_MPA_CLIENT_ID, logger
+                ),
+                INBOUND_TOPIC,
                 OUTBOUND_TOPIC,
                 actor_function,
-                durable=True,
+                durable_in=True,
+                durable_out=True,
             )
-            await producer_actor.open()
+            await processor_actor.open()
 
-            logger.debug("Produce something")
-            await producer_actor.next(TEST_PAYLOAD)
-            await producer_actor.next(TEST_PAYLOAD)
+            logger.debug("Send something to consume")
+            producer = Messenger(
+                URL, CREDENTIALS, CLUSTER_ID, PRODUCER_CLIENT_ID, logger
+            )
+            await producer.open()
+            await producer.publish_durable(INBOUND_TOPIC, TEST_PAYLOAD)
+            await producer.publish_durable(INBOUND_TOPIC, TEST_PAYLOAD)
 
             logger.debug("Wait for actor function callback and consumer callback")
             await asyncio.wait_for(actor_function_called, 1)
             await asyncio.wait_for(consumer_callback_called, 1)
 
-            # Shut down the producer actor and the producer
-            await producer_actor.close()
+            # Shut down the processor actor, the consumer and the producer
+            await processor_actor.close()
             await consumer.close()
+            await producer.close()
 
         asyncio.run(run())

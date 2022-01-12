@@ -1,7 +1,7 @@
 py-messenger
 ============
 
-A general purpose messaging library that provides a neutral API for the most used communication patterns, like pub-sub, JSON-RPC, etc.
+A general purpose messaging library that provides a neutral API for the most used communication patterns, like pub-sub, request-response, etc.
 
 The main purpose of the `messenger` package is to provide an abstraction layer on top of the messaging middlewares.
 
@@ -12,6 +12,5 @@ The implementation relies on the following technologies:
 - [NATS streaming](https://nats.io/download/nats-io/nats-streaming-server/).
 - [NATS - Python3 Client for Asyncio](https://github.com/nats-io/nats.py) An asyncio Python client for the NATS messaging system.
 - [NATS Streaming Python3/Asyncio Client](https://github.com/nats-io/stan.py) An asyncio based Python3 client for the NATS Streaming messaging system platform.
-- [NATS - Python3 Client for Asyncio](https://github.com/nats-io/nats.py)
 - [nats.py v2.0.0 - docs](https://nats-io.github.io/nats.py/releases/v2.0.0.html)
 
