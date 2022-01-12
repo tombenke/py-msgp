@@ -34,6 +34,8 @@ tasks:
       - task: dc-upd
       - python -m unittest discover ./messenger/tests/
       - python -m unittest discover ./nats_messenger/tests/
+      - python -m unittest discover ./rpc/tests/
+      - python -m unittest discover ./mpa/tests/
       - task: dc-down
 
   test-verbose:
@@ -43,6 +45,8 @@ tasks:
       - task: format
       - python -m unittest discover ./messenger/tests/ -v
       - python -m unittest discover ./nats_messenger/tests/ -v
+      - python -m unittest discover ./rpc/tests/ -v
+      - python -m unittest discover ./mpa/tests/ -v
       - task: dc-down
 
   coverage:
@@ -51,6 +55,8 @@ tasks:
       - task: dc-upd
       - coverage run -m unittest discover ./messenger/tests/ -v
       - coverage run -m unittest discover ./nats_messenger/tests/ -v
+      - coverage run -m unittest discover ./rpc/tests/ -v
+      - coverage run -m unittest discover ./mpa/tests/ -v
       - coverage html
       - coverage report
       - coverage-badge -f -o coverage.svg
@@ -62,6 +68,8 @@ tasks:
       - task: format
       - pylint messenger/
       - pylint nats_messenger/
+      - pylint rpc/
+      - pylint mpa/
 
   pre-commit:
     desc: Runs the QA tasks from a git pre-commit hook
@@ -97,8 +105,10 @@ tasks:
     desc: Generate module documentation into the docs/ folder
     cmds:
       - echo {{.VERSION}}
-      - pdoc -o docs messenger/ --footer-text="py-messenger {{.VERSION}}"
+      - pdoc -o docs messenger/ --footer-text="py-messenger/messenger {{.VERSION}}"
       - pdoc -o docs nats_messenger/ --footer-text="py-messenger/nats_messenger {{.VERSION}}"
+      - pdoc -o docs rpc/ --footer-text="py-messenger/rpc {{.VERSION}}"
+      - pdoc -o docs mpa/ --footer-text="py-messenger/mpa {{.VERSION}}"
       #- pydeps --reverse --cluster -o docs/messenger.png -T png --no-show messenger/
       #- pyreverse -my -o png --output-directory=./docs/ --project=messenger messenger/*.py
 

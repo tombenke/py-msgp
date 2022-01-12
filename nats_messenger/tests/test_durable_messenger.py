@@ -1,10 +1,17 @@
 """Test the messenger module"""
 import unittest
+import asyncio
 from loguru import logger
 
-import asyncio
 from nats_messenger.messenger import Messenger
-from nats_messenger.tests.config_test import *
+from nats_messenger.tests.config_test import (
+    URL,
+    CREDENTIALS,
+    CLUSTER_ID,
+    CLIENT_ID,
+    TEST_PAYLOAD,
+    TEST_TOPIC,
+)
 
 
 class MessengerDurableTestCase(unittest.TestCase):
@@ -23,6 +30,7 @@ class MessengerDurableTestCase(unittest.TestCase):
                 nonlocal total_messages
                 nonlocal callback_called
                 logger.debug(f"Received a message: '{msg}'")
+                self.assertEqual(TEST_PAYLOAD, msg)
                 total_messages += 1
                 if total_messages >= 2:
                     callback_called.set_result(None)
@@ -46,8 +54,6 @@ class MessengerDurableTestCase(unittest.TestCase):
 
         asyncio.run(run())
 
-        self.assertTrue(True)
-
     def test_publish_async_subscribe_durable(self) -> None:
         """Test the Messenger's asynchronous publish and subscribe methods with durable subject"""
 
@@ -63,6 +69,7 @@ class MessengerDurableTestCase(unittest.TestCase):
                 nonlocal total_messages
                 nonlocal callback_called
                 logger.debug(f"Received a message: '{msg}'")
+                self.assertEqual(TEST_PAYLOAD, msg)
                 total_messages += 1
                 if total_messages >= 2:
                     callback_called.set_result(None)
@@ -101,8 +108,6 @@ class MessengerDurableTestCase(unittest.TestCase):
 
         asyncio.run(run())
 
-        self.assertTrue(True)
-
     def test_publish_subscribe_durable_with_ack(self) -> None:
         """Test the Messenger's synchronous publish and subscribe methods with durable subject using manual acknowledge"""
 
@@ -121,6 +126,7 @@ class MessengerDurableTestCase(unittest.TestCase):
                 logger.debug(
                     f"Received a message: '{msg}' total_messages: {total_messages}"
                 )
+                self.assertEqual(TEST_PAYLOAD, msg)
                 return True
 
             subscriber = await messenger.subscribe_durable_with_ack(
@@ -134,9 +140,8 @@ class MessengerDurableTestCase(unittest.TestCase):
             logger.debug("Wait for callbacks")
             await asyncio.wait_for(callback_called, 1)
 
+            await subscriber.unsubscribe()
             logger.debug("Close messenger")
             await messenger.close()
 
         asyncio.run(run())
-
-        self.assertTrue(True)

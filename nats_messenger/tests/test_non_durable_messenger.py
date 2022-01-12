@@ -1,10 +1,17 @@
 """Test the messenger module"""
 import unittest
+import asyncio
 from loguru import logger
 
-import asyncio
 from nats_messenger.messenger import Messenger
-from nats_messenger.tests.config_test import *
+from nats_messenger.tests.config_test import (
+    URL,
+    CREDENTIALS,
+    CLUSTER_ID,
+    CLIENT_ID,
+    TEST_PAYLOAD,
+    TEST_TOPIC,
+)
 
 
 class MessengerNonDurableTestCase(unittest.TestCase):
@@ -23,6 +30,7 @@ class MessengerNonDurableTestCase(unittest.TestCase):
                 nonlocal total_messages
                 nonlocal callback_called
                 logger.debug(f"Received a message: '{msg}'")
+                self.assertEqual(TEST_PAYLOAD, msg)
                 total_messages += 1
                 if total_messages >= 2:
                     callback_called.set_result(None)
@@ -43,8 +51,6 @@ class MessengerNonDurableTestCase(unittest.TestCase):
             await messenger.close()
 
         asyncio.run(run())
-
-        self.assertTrue(True)
 
     def test_request_response(self) -> None:
         """Test the Messenger's request and response methods"""
@@ -83,5 +89,3 @@ class MessengerNonDurableTestCase(unittest.TestCase):
             await messenger.close()
 
         asyncio.run(run())
-
-        self.assertTrue(True)

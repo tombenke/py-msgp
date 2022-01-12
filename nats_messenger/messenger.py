@@ -1,6 +1,7 @@
 """The NATS/NATS-Streaming implementation of the Messeger class"""
 import asyncio
 from typing import Callable
+from loguru import logger
 from nats.aio.client import Client as NATS
 from stan.aio.client import Client as STAN
 from messenger import messenger
@@ -16,7 +17,12 @@ class Messenger(messenger.Messenger):
     """
 
     def __init__(
-        self, url: str, credentials: str, cluster_id: str, client_id: str, logger
+        self,
+        url: str,
+        credentials: str,
+        cluster_id: str,
+        client_id: str,
+        _logger=logger,
     ):
         """
         Constructor for a Messenger
@@ -26,7 +32,7 @@ class Messenger(messenger.Messenger):
         self.credentials = credentials
         self.cluster_id = cluster_id
         self.client_id = client_id
-        self.logger = logger
+        self.logger = _logger
         self.nats_conn: NATS
         self.stan_conn: STAN
 

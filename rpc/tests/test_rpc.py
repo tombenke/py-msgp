@@ -21,8 +21,8 @@ TEST_PAYLOAD = b"test payload..."
 class RPCTestCase(unittest.TestCase):
     """The RPC test cases functions"""
 
-    def test_open_close(self) -> None:
-        """Test the Messenger open and close methods"""
+    def test_server_client(self) -> None:
+        """Test the RPCServer.listen() and RPCClient.call() methods"""
 
         async def run():
             # Setup the server
@@ -67,5 +67,3 @@ class RPCTestCase(unittest.TestCase):
             await rpc_client.close()
 
         asyncio.run(run())
-
-        self.assertTrue(True)

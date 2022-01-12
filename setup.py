@@ -19,9 +19,12 @@ REQUIRES_PYTHON = ">=3.8"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
+    "abc",
     "asyncio-nats-client",
     "asyncio-nats-streaming",
     "python-dotenv",
+    "loguru",
+    "typing",
 ]
 
 TEST_REQUIREMENTS = [
@@ -31,7 +34,6 @@ TEST_REQUIREMENTS = [
     "pylint",
     "pdoc",
     "pydeps",
-    "loguru",
 ]
 
 setup(

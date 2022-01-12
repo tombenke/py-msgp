@@ -1,0 +1,10 @@
+"""Common configuration parameters for test cases"""
+
+URL = ""
+CREDENTIALS = ""
+CLUSTER_ID = "py-messenger-cluster"
+PRODUCER_CLIENT_ID = "test-producer-client"
+CONSUMER_MPA_CLIENT_ID = "test-consumer-mpa-client"
+INBOUND_TOPIC = "test-mpa-inbound-topic-name"
+OUTBOUND_TOPIC = "test-mpa-outbound-topic-name"
+TEST_PAYLOAD = b"test payload..."
