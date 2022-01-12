@@ -134,9 +134,6 @@ class MessengerDurableTestCase(unittest.TestCase):
             logger.debug("Wait for callbacks")
             await asyncio.wait_for(callback_called, 1)
 
-            # logger.debug("Unsubscribe")
-            # await subscriber.unsubscribe()
-
             logger.debug("Close messenger")
             await messenger.close()
 
