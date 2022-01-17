@@ -19,8 +19,8 @@ jobs:
       - id: checkout
         uses: tombenke/py-msgp/.github/actions/checkout@master
 
-      - name: Run Docker build task
-        run: task build-docker
+      - name: Run Docker build package
+        run: task build
 
-      - name: Push docker images
-        run: task push-docker
+      - name: Publish package
+        run: task publish-package

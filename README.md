@@ -1,6 +1,10 @@
 py-msgp
 =======
 
+[![Quality Check Status](https://github.com/tombenke/py-msgp/workflows/Quality%20Check/badge.svg)](https://github.com/tombenke/py-msgp)
+[![Release Status](https://github.com/tombenke/py-msgp/workflows/Release/badge.svg)](https://github.com/tombenke/py-msgp)
+![Coverage](./coverage.svg)
+
 Python implementation of generic messaging patterns.
 
 A general purpose messaging library that provides a neutral API for the most used communication patterns, like pub-sub, request-response, etc.

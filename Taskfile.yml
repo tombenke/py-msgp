@@ -76,6 +76,11 @@ tasks:
     cmds:
       - python -m build
 
+  publish-package:
+    desc: Publish the package to PyPI
+    cmds:
+      - echo "TODO"
+
   pre-commit:
     desc: Runs the QA tasks from a git pre-commit hook
     cmds:
