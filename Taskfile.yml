@@ -74,12 +74,13 @@ tasks:
   build:
     desc: Build
     cmds:
+      - task: clean
       - python -m build
 
   publish-package:
     desc: Publish the package to PyPI
     cmds:
-      - echo "TODO"
+      - twine upload -r pypi  dist/v*
 
   pre-commit:
     desc: Runs the QA tasks from a git pre-commit hook
@@ -128,6 +129,7 @@ tasks:
       - rm .coverage -f
       - rm htmlcov -fr
       - rm docs/* -fr
+      - rm dist/* -fr
 
 
   dc-up:

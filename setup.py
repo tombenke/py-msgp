@@ -26,7 +26,8 @@ REQUIRED = [
     "typing",
 ]
 
-TEST_REQUIREMENTS = [
+DEV_REQUIREMENTS = [
+    "build",
     "coverage",
     "coverage-badge",
     "black",
@@ -37,7 +38,7 @@ TEST_REQUIREMENTS = [
 
 setup(
     name=NAME,
-    version="0.1.0",
+    version="0.1.1",
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
@@ -49,7 +50,7 @@ setup(
     packages=find_packages(exclude=("tests", "docs")),
     include_package_data=True,
     install_requires=REQUIRED,
-    extras_require={"dev": TEST_REQUIREMENTS},
+    extras_require={"dev": DEV_REQUIREMENTS},
     entry_points={
         "console_scripts": [],
     },
