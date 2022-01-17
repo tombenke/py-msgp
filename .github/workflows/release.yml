@@ -7,17 +7,17 @@ on:
 
 jobs:
   qa:
-    uses: tombenke/py-msgp/.github/workflows/qa.yml@v0.3.0
+    uses: tombenke/py-msgp/.github/workflows/qa.yml@master
 
   build:
     needs: qa
     runs-on: ubuntu-latest
     steps:
       - id: setup
-        uses: tombenke/py-msgp/.github/actions/setup@v0.3.0
+        uses: tombenke/py-msgp/.github/actions/setup@master
 
       - id: checkout
-        uses: tombenke/py-msgp/.github/actions/checkout@v0.3.0
+        uses: tombenke/py-msgp/.github/actions/checkout@master
 
       - name: Run Docker build task
         run: task build-docker
