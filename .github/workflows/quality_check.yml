@@ -10,4 +10,4 @@ on:
 
 jobs:
   qa:
-    uses: tombenke/py-messenger/.github/workflows/qa.yml@v0.3.0
+    uses: tombenke/py-msgp/.github/workflows/qa.yml@v0.3.0

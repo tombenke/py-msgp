@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: setup
-        uses: tombenke/py-messenger/.github/actions/setup@v0.3.0
+        uses: tombenke/py-msgp/.github/actions/setup@v0.3.0
 
       - id: checkout
-        uses: tombenke/py-messenger/.github/actions/checkout@v0.3.0
+        uses: tombenke/py-msgp/.github/actions/checkout@v0.3.0
 
       - name: Run coverage task
         run: task coverage
@@ -43,10 +43,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: setup
-        uses: tombenke/py-messenger/.github/actions/setup@v0.3.0
+        uses: tombenke/py-msgp/.github/actions/setup@v0.3.0
 
       - id: checkout
-        uses: tombenke/py-messenger/.github/actions/checkout@v0.3.0
+        uses: tombenke/py-msgp/.github/actions/checkout@v0.3.0
 
       - name: Run lint task
         run: task lint
@@ -56,10 +56,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: setup
-        uses: tombenke/py-messenger/.github/actions/setup@v0.3.0
+        uses: tombenke/py-msgp/.github/actions/setup@v0.3.0
 
       - id: checkout
-        uses: tombenke/py-messenger/.github/actions/checkout@v0.3.0
+        uses: tombenke/py-msgp/.github/actions/checkout@v0.3.0
 
       - name: Run test task
         run: task test
