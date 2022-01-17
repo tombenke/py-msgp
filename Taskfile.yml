@@ -3,7 +3,7 @@
 version: 3
 
 vars:
-  APPNAME: py-messenger
+  APPNAME: py-msgp
   DEP: ./...
   DOCKER_REG_PREFIX: docker.pkg.github.com
   DOCKER_REG_USER: tombenke
@@ -71,6 +71,11 @@ tasks:
       - pylint rpc/
       - pylint mpa/
 
+  build:
+    desc: Build
+    cmds:
+      - python -m build
+
   pre-commit:
     desc: Runs the QA tasks from a git pre-commit hook
     cmds:
@@ -105,10 +110,10 @@ tasks:
     desc: Generate module documentation into the docs/ folder
     cmds:
       - echo {{.VERSION}}
-      - pdoc -o docs messenger/ --footer-text="py-messenger/messenger {{.VERSION}}"
-      - pdoc -o docs nats_messenger/ --footer-text="py-messenger/nats_messenger {{.VERSION}}"
-      - pdoc -o docs rpc/ --footer-text="py-messenger/rpc {{.VERSION}}"
-      - pdoc -o docs mpa/ --footer-text="py-messenger/mpa {{.VERSION}}"
+      - pdoc -o docs messenger/ --footer-text="py-msgp/messenger {{.VERSION}}"
+      - pdoc -o docs nats_messenger/ --footer-text="py-msgp/nats_messenger {{.VERSION}}"
+      - pdoc -o docs rpc/ --footer-text="py-msgp/rpc {{.VERSION}}"
+      - pdoc -o docs mpa/ --footer-text="py-msgp/mpa {{.VERSION}}"
       #- pydeps --reverse --cluster -o docs/messenger.png -T png --no-show messenger/
       #- pyreverse -my -o png --output-directory=./docs/ --project=messenger messenger/*.py
 

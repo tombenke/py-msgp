@@ -1,5 +1,7 @@
-py-messenger
-============
+py-msgp
+=======
+
+Python implementation of generic messaging patterns.
 
 A general purpose messaging library that provides a neutral API for the most used communication patterns, like pub-sub, request-response, etc.
 

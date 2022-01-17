@@ -3,7 +3,7 @@ services:
 
   nats:
     image: nats-streaming:latest
-    command: -store file -dir datastore -cid "py-messenger-cluster" -m 8222 -V
+    command: -store file -dir datastore -cid "py-msgp-cluster" -m 8222 -V
     restart: unless-stopped
     ports:
       - "4222:4222"
@@ -11,4 +11,4 @@ services:
       - "8222:8222"
 
 networks:
-  py-messenger-network:
+  py-msgp-network:

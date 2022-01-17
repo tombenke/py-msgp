@@ -2,7 +2,7 @@
 
 URL = ""
 CREDENTIALS = ""
-CLUSTER_ID = "py-messenger-cluster"
+CLUSTER_ID = "py-msgp-cluster"
 PRODUCER_CLIENT_ID = "test-producer-client"
 CONSUMER_CLIENT_ID = "test-consumer-client"
 CONSUMER_MPA_CLIENT_ID = "test-consumer-mpa-client"

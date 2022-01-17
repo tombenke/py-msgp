@@ -4,14 +4,14 @@ import pathlib
 # Package metadata
 # ----------------
 
-NAME = "py-messenger"
-DESCRIPTION = "A general purpose messaging library that provides a neutral API for the most used communication patterns, like pub-sub, JSON-RPC, etc."
+NAME = "py-msgp"
+DESCRIPTION = "A general purpose messaging library that provides a neutral API for the most used communication patterns, like pub-sub, request-response, etc."
 
 # Get the long description from the README file
 HERE = pathlib.Path(__file__).parent.resolve()
 LONG_DESCRIPTION = (HERE / "README.md").read_text(encoding="utf-8")
 
-URL = "https://github.com/tombenke/py-messenger"
+URL = "https://github.com/tombenke/py-msgp"
 EMAIL = "tamas.benke@lhsystems.com"
 AUTHOR = "Tamás Benke"
 LICENSE = "MIT"
@@ -19,7 +19,6 @@ REQUIRES_PYTHON = ">=3.8"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    "abc",
     "asyncio-nats-client",
     "asyncio-nats-streaming",
     "python-dotenv",
@@ -58,5 +57,11 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
+        "Development Status :: 4 - Beta",
+        "Natural Language :: English",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Topic :: Software Development :: Libraries :: Python Modules",
     ],
 )

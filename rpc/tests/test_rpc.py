@@ -11,7 +11,7 @@ from rpc.server import RPCServer
 
 URL = ""
 CREDENTIALS = ""
-CLUSTER_ID = "py-messenger-cluster"
+CLUSTER_ID = "py-msgp-cluster"
 RPC_CLIENT_ID = "test-client"
 RPC_SERVER_ID = "test-server"
 TEST_TOPIC = "test-rpc-topic-name"
