@@ -5,8 +5,8 @@ on:
     branches:
       - "*" # matches every branch
       - "*/*" # matches every branch containing a single '/'
-      - "!ci/*" # excludes ci branches
-      - "!master" # excludes master
+        #      - "!ci/*" # excludes ci branches
+        #      - "!master" # excludes master
 
 jobs:
   qa:

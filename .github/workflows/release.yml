@@ -1,26 +1,26 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - master
+  release:
+    types:
+      - published
 
 jobs:
   qa:
     uses: tombenke/py-msgp/.github/workflows/qa.yml@master
 
-  build:
+  build-and-publish:
     needs: qa
     runs-on: ubuntu-latest
     steps:
-      - id: setup
-        uses: tombenke/py-msgp/.github/actions/setup@master
+        #      - id: setup
+        #        uses: tombenke/py-msgp/.github/actions/setup@master
+        #
+        #      - id: checkout
+        #        uses: tombenke/py-msgp/.github/actions/checkout@master
 
-      - id: checkout
-        uses: tombenke/py-msgp/.github/actions/checkout@master
-
-        #      - name: Build the package
-        #        run: task build
+      - name: Build the package
+        run: task build
 
         #      - name: Publish package
         #        run: task publish-package
