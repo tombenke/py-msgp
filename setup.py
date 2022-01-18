@@ -9,7 +9,8 @@ DESCRIPTION = "A general purpose messaging library that provides a neutral API f
 
 # Get the long description from the README file
 HERE = pathlib.Path(__file__).parent.resolve()
-LONG_DESCRIPTION = (HERE / "README.md").read_text(encoding="utf-8")
+#LONG_DESCRIPTION = (HERE / "README.md").read_text(encoding="utf-8")
+LONG_DESCRIPTION = "For further information, please visit the [project's homepage](https://github.com/tombenke/py-msgp)."
 
 URL = "https://github.com/tombenke/py-msgp"
 EMAIL = "tamas.benke@lhsystems.com"
@@ -38,7 +39,7 @@ DEV_REQUIREMENTS = [
 
 setup(
     name=NAME,
-    version="0.1.1",
+    version="0.1.2",
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
