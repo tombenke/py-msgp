@@ -75,12 +75,12 @@ tasks:
     desc: Build
     cmds:
       - task: clean
-      - python -m build
+      - VERSION={{.VERSION}} python -m build
 
   publish-package:
     desc: Publish the package to PyPI
     cmds:
-      - twine upload -r pypi  dist/v*
+      - twine upload -r pypi  dist/*
 
   pre-commit:
     desc: Runs the QA tasks from a git pre-commit hook
