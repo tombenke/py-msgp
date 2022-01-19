@@ -1,7 +1,7 @@
 """The Messenger class"""
 from abc import ABC, abstractmethod
 from typing import Callable
-from messenger.subscriber import Subscriber
+from .subscriber import Subscriber
 
 
 class Messenger(ABC):

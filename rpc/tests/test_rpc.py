@@ -4,8 +4,7 @@ from loguru import logger
 
 import asyncio
 from nats_messenger.messenger import Messenger
-from rpc.client import RPCClient
-from rpc.server import RPCServer
+from rpc import RPCClient, RPCServer
 
 """Common configuration parameters for test cases"""
 

@@ -2,8 +2,8 @@
 import unittest
 import asyncio
 from loguru import logger
-from nats_messenger.messenger import Messenger
-from mpa.producer import MessageProducerActor
+from nats_messenger import Messenger
+from mpa import MessageProducerActor
 from mpa.tests.config_test import (
     URL,
     CREDENTIALS,

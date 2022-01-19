@@ -2,7 +2,7 @@
 import unittest
 
 import asyncio
-from messenger.messenger import Messenger
+from messenger import Messenger
 
 
 class FakeMessenger(Messenger):
