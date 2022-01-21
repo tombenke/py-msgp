@@ -1,6 +1,6 @@
 """Common configuration parameters for test cases"""
 
-URL = ""
+URL = "nats://127.0.0.1:4222"
 CREDENTIALS = ""
 CLUSTER_ID = "py-msgp-cluster"
 PRODUCER_CLIENT_ID = "test-producer-client"

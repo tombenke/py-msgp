@@ -43,9 +43,9 @@ class Messenger(messenger.Messenger):
 
         # Use borrowed connection for NATS then mount NATS Streaming
         # client on top.
-        self.logger.debug("Connect to NATS")
+        self.logger.debug(f"Connect to NATS at '{self.url}'")
         self.nats_conn = NATS()
-        await self.nats_conn.connect(io_loop=asyncio.get_event_loop())
+        await self.nats_conn.connect(servers=self.url, io_loop=asyncio.get_event_loop())
 
         # Start session with NATS Streaming cluster.
         self.logger.debug("Connect to STAN")

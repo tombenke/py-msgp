@@ -8,7 +8,7 @@ from rpc import RPCClient, RPCServer
 
 """Common configuration parameters for test cases"""
 
-URL = ""
+URL = "nats://127.0.0.1:4222"
 CREDENTIALS = ""
 CLUSTER_ID = "py-msgp-cluster"
 RPC_CLIENT_ID = "test-client"
