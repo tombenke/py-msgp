@@ -20,3 +20,7 @@ The implementation relies on the following technologies:
 - [NATS Streaming Python3/Asyncio Client](https://github.com/nats-io/stan.py) An asyncio based Python3 client for the NATS Streaming messaging system platform.
 - [nats.py v2.0.0 - docs](https://nats-io.github.io/nats.py/releases/v2.0.0.html)
 
+## License
+The scripts and documentation in this project are released under the [MIT License](LICENSE)
+
+
