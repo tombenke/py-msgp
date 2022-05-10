@@ -103,13 +103,13 @@ tasks:
   install-dev:
     desc: Install the package and its dependencies for development
     cmds:
-      - pip install .[dev] .
+      - pip install .[dev]
       - task: install-git-hooks
 
   install-dev-editable:
     desc: Install the package and its dependencies for development with editablility
     cmds:
-      - pip install -e .[dev] .
+      - pip install -e .[dev]
       - task: install-git-hooks
 
   docs:

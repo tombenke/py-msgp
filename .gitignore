@@ -52,4 +52,5 @@ docs/_build/
 docs/
 .env
 _env
+venv/
 .vscode
