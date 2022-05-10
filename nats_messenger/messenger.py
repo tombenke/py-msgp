@@ -121,7 +121,7 @@ class Messenger(messenger.Messenger):
         async def nats_callback(msg):
             self.logger.debug(f"Call service function with '{msg}'")
             service_response = await service_fun(msg.data)
-            self.logger.debug(f"Respont with '{service_response}'")
+            self.logger.debug(f"Respond with '{service_response}'")
             if service_response is None:
                 service_response = b""
             # await msg.respond(service_response)
