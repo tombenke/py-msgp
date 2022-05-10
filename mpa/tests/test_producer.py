@@ -80,6 +80,51 @@ class ProducerMPATestCase(unittest.TestCase):
 
         asyncio.run(run())
 
+    def test_producer_actor_wo_actor_function(self) -> None:
+        """Test the MessageProducerActor without actor function"""
+
+        async def run():
+            logger.debug("Setup the test consumer")
+            total_consumer_messages = 0
+            consumer_callback_called = asyncio.Future()
+
+            async def consumer_callback(msg: bytes):
+                nonlocal total_consumer_messages
+                nonlocal consumer_callback_called
+                logger.debug(f"Received a message: '{msg}'")
+                self.assertEqual(TEST_PAYLOAD, msg)
+                total_consumer_messages += 1
+                if total_consumer_messages >= 2:
+                    consumer_callback_called.set_result(None)
+
+            consumer = Messenger(
+                URL, CREDENTIALS, CLUSTER_ID, CONSUMER_CLIENT_ID, logger
+            )
+            await consumer.open()
+            await consumer.subscribe(OUTBOUND_TOPIC, callback=consumer_callback)
+
+            logger.debug("Setup the producer actor")
+
+            producer_actor = MessageProducerActor(
+                Messenger(URL, CREDENTIALS, CLUSTER_ID, PRODUCER_MPA_CLIENT_ID, logger),
+                OUTBOUND_TOPIC,
+                durable=False,
+            )
+            await producer_actor.open()
+
+            logger.debug("Produce something")
+            await producer_actor.next(TEST_PAYLOAD)
+            await producer_actor.next(TEST_PAYLOAD)
+
+            logger.debug("Wait for actor function callback and consumer callback")
+            await asyncio.wait_for(consumer_callback_called, 1)
+
+            # Shut down the producer actor and the producer
+            await producer_actor.close()
+            await consumer.close()
+
+        asyncio.run(run())
+
     def test_producer_actor_durable(self) -> None:
         """Test the MessageProducerActor using durable message channel"""
 
