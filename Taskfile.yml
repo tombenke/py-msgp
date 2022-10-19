@@ -117,12 +117,9 @@ tasks:
     desc: Generate module documentation into the docs/ folder
     cmds:
       - echo {{.VERSION}}
-      - pdoc -o docs messenger/ --footer-text="py-msgp/messenger {{.VERSION}}"
-      - pdoc -o docs nats_messenger/ --footer-text="py-msgp/nats_messenger {{.VERSION}}"
-      - pdoc -o docs rpc/ --footer-text="py-msgp/rpc {{.VERSION}}"
-      - pdoc -o docs mpa/ --footer-text="py-msgp/mpa {{.VERSION}}"
-      #- pydeps --reverse --cluster -o docs/messenger.png -T png --no-show messenger/
-      #- pyreverse -my -o png --output-directory=./docs/ --project=messenger messenger/*.py
+      - pdoc -o docs messenger/ rpc/ mpa/ --footer-text="py-msgp {{.VERSION}}"
+        ##- pydeps --reverse --cluster -o docs/messenger.png -T png --no-show messenger/
+        ##- pyreverse -my -o png --output-directory=./docs/ --project=messenger messenger/*.py
 
   clean:
     desc: Clean temporary files and folders

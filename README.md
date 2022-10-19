@@ -23,4 +23,3 @@ The implementation relies on the following technologies:
 ## License
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
 
-
