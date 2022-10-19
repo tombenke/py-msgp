@@ -14,6 +14,7 @@ vars:
     sh: echo "$(pwd)/.git/hooks"
 
 env:
+  PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: python
 
 tasks:
   default:
@@ -107,7 +108,7 @@ tasks:
       - task: install-git-hooks
 
   install-dev-editable:
-    desc: Install the package and its dependencies for development with editablility
+    desc: Install the package and its dependencies for development with editability
     cmds:
       - pip install -e .[dev]
       - task: install-git-hooks
@@ -162,3 +163,9 @@ tasks:
     desc: Clean up docker containers
     cmds:
       - docker-compose -f docker-compose.test.yml down --volumes --remove-orphans
+
+  venv-create:
+    desc: Create a new Python Virtual Environment under the local folder
+    cmds:
+      - python3.9 -m venv ./venv
+
