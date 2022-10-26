@@ -20,4 +20,4 @@ class Subscriber(subscriber.Subscriber):
         if hasattr(self.subscription, "unsubscribe"):
             await self.subscription.unsubscribe()
         else:
-            await self.client.unsubscribe(self.subscription)
+            await self.client.unsubscribe()

@@ -117,9 +117,7 @@ tasks:
     desc: Generate module documentation into the docs/ folder
     cmds:
       - echo {{.VERSION}}
-      - pdoc -o docs messenger/ rpc/ mpa/ --footer-text="py-msgp {{.VERSION}}"
-        ##- pydeps --reverse --cluster -o docs/messenger.png -T png --no-show messenger/
-        ##- pyreverse -my -o png --output-directory=./docs/ --project=messenger messenger/*.py
+      - pdoc -o docs -d google messenger/ nats_messenger/ rpc/ mpa/ --footer-text="py-msgp {{.VERSION}}"
 
   clean:
     desc: Clean temporary files and folders
@@ -134,7 +132,6 @@ tasks:
     desc: Start docker containers
     cmds:
       - docker-compose -f docker-compose.test.yml up
-      - sleep 10
 
   dc-upd:
     desc: Start docker containers in the background
@@ -166,3 +163,7 @@ tasks:
     cmds:
       - python3.9 -m venv ./venv
 
+  start-nats-box:
+    desc: Starts the nats toolbox in a separate container
+    cmds:
+      -  docker run --network py-msgp_py-msgp-network -it --rm -v "$(pwd)/sbox:/sbox" natsio/nats-box

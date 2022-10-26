@@ -45,18 +45,20 @@ class MessageProducerActor:
         self.logger.debug("MessageProducerActor.close()")
         await self.messenger.close()
 
-    async def next(self, payload: bytes):
+    async def next(self, payload: bytes, headers=None):
         """
         The next method hands over the `payload` to the actor function of this producer-only MPA,
         that forwards it to the outbound channel.
         """
         outbound_payload = payload
         if self.actor_function is not None:
-            outbound_payload = await self.actor_function(payload)
+            outbound_payload = await self.actor_function(payload, headers=headers)
 
         if self.durable:
             await self.messenger.publish_durable(
                 self.outbound_subject, outbound_payload
             )
         else:
-            await self.messenger.publish(self.outbound_subject, outbound_payload)
+            await self.messenger.publish(
+                self.outbound_subject, outbound_payload, headers=headers
+            )

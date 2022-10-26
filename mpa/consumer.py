@@ -17,7 +17,7 @@ class MessageConsumerActor:
         self,
         messenger: Messenger,
         inbound_subject: str,
-        actor_function: Callable[[bytes], bytes],
+        actor_function: Callable[[bytes, dict], bytes],
         durable=True,
         _logger=logger,
     ):

@@ -2,13 +2,41 @@ version: "3.2"
 services:
 
   nats:
-    image: nats-streaming:latest
-    command: -store file -dir datastore -cid "py-msgp-cluster" -m 8222 -V
+    container_name: nats
+    image: nats:latest
+    command: -p 4222 --cluster_name "py-msgp-cluster" -m 8222 -js -V
     restart: unless-stopped
     ports:
       - "4222:4222"
       - "6222:6222"
       - "8222:8222"
+    networks:
+      py-msgp-network:
+        aliases:
+          - nats
+
+  # Run initContainers to check the availability of the fundamental services
+  # and may initialize streams and consumers using JetStream
+  #
+  # NOTE: Add the following docker-compose code fragment to containers
+  # that needs NATS services and want to use streams and comsumers:
+  # 
+  #  depends_on:
+  #    init-nats-jetstream:
+  #      condition: service_completed_successfully
+  #
+  init-nats-jetstream:
+    container_name: init-nats-jetstream
+    image: natsio/nats-box:0.8.1
+    command: -c 'sh /sbox/init-nats-jetstream.sh'
+    volumes:
+      - ./init-nats-jetstream.sh:/sbox/init-nats-jetstream.sh
+    networks:
+      py-msgp-network:
+        aliases:
+          - init-nats-jetstream
+    depends_on:
+      - nats
 
 networks:
   py-msgp-network:

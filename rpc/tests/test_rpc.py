@@ -25,15 +25,13 @@ class RPCTestCase(unittest.TestCase):
 
         async def run():
             # Setup the server
-            rpc_server = RPCServer(
-                Messenger(URL, CREDENTIALS, CLUSTER_ID, RPC_SERVER_ID, logger)
-            )
+            rpc_server = RPCServer(Messenger(URL, logger, name=RPC_SERVER_ID))
             await rpc_server.open()
             total_messages = 0
             callback_called = asyncio.Future()
             service_fun_response = b"service_fun response"
 
-            async def service_fun(payload: bytes) -> bytes:
+            async def service_fun(payload: bytes, headers: dict) -> bytes:
                 nonlocal total_messages
                 nonlocal callback_called
                 logger.debug(f"Service function is called with message: '{payload}'")
@@ -47,9 +45,7 @@ class RPCTestCase(unittest.TestCase):
             await rpc_server.listen(TEST_TOPIC, service_fun=service_fun)
 
             # Setup the client
-            rpc_client = RPCClient(
-                Messenger(URL, CREDENTIALS, CLUSTER_ID, RPC_CLIENT_ID, logger)
-            )
+            rpc_client = RPCClient(Messenger(URL, logger, name=RPC_CLIENT_ID))
             await rpc_client.open()
 
             # Call the server via the client

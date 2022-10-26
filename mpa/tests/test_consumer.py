@@ -6,10 +6,9 @@ from nats_messenger import Messenger
 from mpa import MessageConsumerActor
 from mpa.tests.config_test import (
     URL,
-    CREDENTIALS,
-    CLUSTER_ID,
     PRODUCER_CLIENT_ID,
     CONSUMER_MPA_CLIENT_ID,
+    DURABLE_INBOUND_TOPIC,
     INBOUND_TOPIC,
     TEST_PAYLOAD,
 )
@@ -27,11 +26,11 @@ class ConsumerMPATestCase(unittest.TestCase):
             actor_function_called = asyncio.Future()
             actor_function_response = b"actor function response..."
 
-            async def actor_function(payload: bytes) -> bytes:
+            async def actor_function(payload: bytes, headers: dict) -> bytes:
                 nonlocal total_messages
                 nonlocal actor_function_called
                 logger.debug(
-                    f"Consumer actor_function is called with message: '{payload}'"
+                    f"Consumer actor_function is called with message: '{payload}' with headers: {headers}"
                 )
                 self.assertEqual(TEST_PAYLOAD, payload)
                 total_messages += 1
@@ -40,7 +39,7 @@ class ConsumerMPATestCase(unittest.TestCase):
                 return actor_function_response
 
             consumer_actor = MessageConsumerActor(
-                Messenger(URL, CREDENTIALS, CLUSTER_ID, CONSUMER_MPA_CLIENT_ID, logger),
+                Messenger(URL, logger, name=CONSUMER_MPA_CLIENT_ID),
                 INBOUND_TOPIC,
                 actor_function,
                 durable=False,
@@ -48,9 +47,7 @@ class ConsumerMPATestCase(unittest.TestCase):
             await consumer_actor.open()
 
             logger.debug("Send something to consume")
-            producer = Messenger(
-                URL, CREDENTIALS, CLUSTER_ID, PRODUCER_CLIENT_ID, logger
-            )
+            producer = Messenger(URL, logger, name=PRODUCER_CLIENT_ID)
             await producer.open()
             await producer.publish(INBOUND_TOPIC, TEST_PAYLOAD)
             await producer.publish(INBOUND_TOPIC, TEST_PAYLOAD)
@@ -73,11 +70,11 @@ class ConsumerMPATestCase(unittest.TestCase):
             actor_function_called = asyncio.Future()
             actor_function_response = b"actor function response..."
 
-            async def actor_function(payload: bytes) -> bytes:
+            async def actor_function(payload: bytes, headers: dict) -> bytes:
                 nonlocal total_messages
                 nonlocal actor_function_called
                 logger.debug(
-                    f"Consumer actor_function is called with message: '{payload}'"
+                    f"Consumer actor_function is called with message: '{payload}' with headers: {headers}"
                 )
                 self.assertEqual(TEST_PAYLOAD, payload)
                 total_messages += 1
@@ -86,19 +83,18 @@ class ConsumerMPATestCase(unittest.TestCase):
                 return actor_function_response
 
             consumer_actor = MessageConsumerActor(
-                Messenger(URL, CREDENTIALS, CLUSTER_ID, CONSUMER_MPA_CLIENT_ID, logger),
-                INBOUND_TOPIC,
+                Messenger(URL, logger, name=CONSUMER_MPA_CLIENT_ID),
+                DURABLE_INBOUND_TOPIC,
                 actor_function,
+                durable=True,
             )
             await consumer_actor.open()
 
             logger.debug("Send something to consume")
-            producer = Messenger(
-                URL, CREDENTIALS, CLUSTER_ID, PRODUCER_CLIENT_ID, logger
-            )
+            producer = Messenger(URL, logger, name=PRODUCER_CLIENT_ID)
             await producer.open()
-            await producer.publish_durable(INBOUND_TOPIC, TEST_PAYLOAD)
-            await producer.publish_durable(INBOUND_TOPIC, TEST_PAYLOAD)
+            await producer.publish_durable(DURABLE_INBOUND_TOPIC, TEST_PAYLOAD)
+            await producer.publish_durable(DURABLE_INBOUND_TOPIC, TEST_PAYLOAD)
 
             logger.debug("Wait for actor function callback")
             await asyncio.wait_for(actor_function_called, 1)

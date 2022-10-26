@@ -6,31 +6,33 @@ from loguru import logger
 from nats_messenger.messenger import Messenger
 from nats_messenger.tests.config_test import (
     URL,
-    CREDENTIALS,
-    CLUSTER_ID,
     CLIENT_ID,
     TEST_PAYLOAD,
     TEST_TOPIC,
+    TEST_HEADERS,
 )
 
 
-class MessengerNonDurableTestCase(unittest.TestCase):
+class MessengerNonDurableTestCase(unittest.IsolatedAsyncioTestCase):
     """The Messenger test cases for non-durable functions"""
 
     def test_publish_subscribe(self) -> None:
         """Test the Messenger's publish and subscribe methods"""
 
         async def run():
-            messenger = Messenger(URL, CREDENTIALS, CLUSTER_ID, CLIENT_ID, logger)
+            messenger = Messenger(URL, logger, name=CLIENT_ID)
             await messenger.open()
             total_messages = 0
             callback_called = asyncio.Future()
 
-            async def callback(msg: bytes):
+            async def callback(payload: bytes, headers: dict):
                 nonlocal total_messages
                 nonlocal callback_called
-                logger.debug(f"Received a message: '{msg}'")
-                self.assertEqual(TEST_PAYLOAD, msg)
+                logger.debug(
+                    f"Received a message with payload: '{payload}', headers: {headers}"
+                )
+                self.assertEqual(TEST_PAYLOAD, payload)
+                self.assertEqual(TEST_HEADERS, headers)
                 total_messages += 1
                 if total_messages >= 2:
                     callback_called.set_result(None)
@@ -38,8 +40,8 @@ class MessengerNonDurableTestCase(unittest.TestCase):
             subscriber = await messenger.subscribe(TEST_TOPIC, callback=callback)
 
             logger.debug("Publish messages")
-            await messenger.publish(TEST_TOPIC, TEST_PAYLOAD)
-            await messenger.publish(TEST_TOPIC, TEST_PAYLOAD)
+            await messenger.publish(TEST_TOPIC, TEST_PAYLOAD, headers=TEST_HEADERS)
+            await messenger.publish(TEST_TOPIC, TEST_PAYLOAD, headers=TEST_HEADERS)
 
             logger.debug("Wait for callbacks")
             await asyncio.wait_for(callback_called, 1)
@@ -56,17 +58,20 @@ class MessengerNonDurableTestCase(unittest.TestCase):
         """Test the Messenger's request and response methods"""
 
         async def run():
-            messenger = Messenger(URL, CREDENTIALS, CLUSTER_ID, CLIENT_ID, logger)
+            messenger = Messenger(URL, logger)
             await messenger.open()
             total_messages = 0
             callback_called = asyncio.Future()
             service_fun_response = b"service_fun response"
 
-            async def service_fun(payload: bytes) -> bytes:
+            async def service_fun(payload: bytes, headers: dict) -> bytes:
                 nonlocal total_messages
                 nonlocal callback_called
-                logger.debug(f"Service function is called with message: '{payload}'")
+                logger.debug(
+                    f"Service function is called with message: payload: '{payload}, headers: {headers}'"
+                )
                 self.assertEqual(TEST_PAYLOAD, payload)
+                self.assertEqual(TEST_HEADERS, headers)
                 total_messages += 1
                 if total_messages >= 2:
                     callback_called.set_result(None)
@@ -75,8 +80,12 @@ class MessengerNonDurableTestCase(unittest.TestCase):
             subscriber = await messenger.response(TEST_TOPIC, service_fun=service_fun)
 
             logger.debug("Request messages")
-            response = await messenger.request(TEST_TOPIC, TEST_PAYLOAD, 1.0)
-            response = await messenger.request(TEST_TOPIC, TEST_PAYLOAD, 1.0)
+            response = await messenger.request(
+                TEST_TOPIC, TEST_PAYLOAD, 1.0, headers=TEST_HEADERS
+            )
+            response = await messenger.request(
+                TEST_TOPIC, TEST_PAYLOAD, 1.0, headers=TEST_HEADERS
+            )
             self.assertEqual(service_fun_response, response)
 
             logger.debug("Wait for requests")

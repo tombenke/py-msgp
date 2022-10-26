@@ -25,8 +25,7 @@ REQUIRES_PYTHON = ">=3.8"
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    "asyncio-nats-client",
-    "asyncio-nats-streaming",
+    "nats-py",
     "python-dotenv",
     "loguru",
     "typing",

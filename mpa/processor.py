@@ -21,7 +21,7 @@ class MessageProcessorActor:
         messenger: Messenger,
         inbound_subject: str,
         outbound_subject: str,
-        actor_function: Callable[[bytes], bytes],
+        actor_function: Callable[[bytes, dict], bytes],
         durable_in=True,
         durable_out=True,
         _logger=logger,
@@ -46,17 +46,23 @@ class MessageProcessorActor:
         self.logger.debug("MessageProcessorActor.open()")
         await self.messenger.open()
 
-        async def actor_function_wrapper(payload: bytes) -> None:
-            outbound_payload = await self.actor_function(payload)
+        async def actor_function_wrapper(payload: bytes, headers: dict) -> None:
+            outbound_payload = await self.actor_function(payload, headers)
+            outbound_headers = (
+                headers  # NOTE: May actor_function should return with modified headers
+            )
             self.logger.debug(
-                f"MessageProcessorActor.actor_wrapper({payload}) -> '{outbound_payload}'"
+                f"MessageProcessorActor.actor_function_wrapper({payload}) -> '{outbound_payload}'"
             )
             if self.durable_out:
                 await self.messenger.publish_durable(
-                    self.outbound_subject, outbound_payload
+                    self.outbound_subject, outbound_payload, outbound_headers
                 )
             else:
-                await self.messenger.publish(self.outbound_subject, outbound_payload)
+                await self.messenger.publish(
+                    self.outbound_subject, outbound_payload, outbound_headers
+                )
+            return outbound_payload
 
         if self.durable_in:
             self.subscriber = await self.messenger.subscribe_durable_with_ack(

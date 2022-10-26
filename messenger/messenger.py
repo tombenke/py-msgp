@@ -1,6 +1,6 @@
 """The Messenger class"""
 from abc import ABC, abstractmethod
-from typing import Callable
+from typing import Callable, Optional
 from .subscriber import Subscriber
 
 
@@ -24,57 +24,85 @@ class Messenger(ABC):
 
     # Functions for non durable subjects
     @abstractmethod
-    async def publish(self, subject: str, payload: bytes):
+    async def publish(self, subject: str, payload: bytes, headers: Optional[dict]):
         """
         Publishes `payload` message to the `subject` topic
-          :param subject: Subject to which the message will be published.
-          :param payload: Message data.
+
+        Args:
+          subject (str): Subject to which the message will be published.
+          payload (bytes): Message data.
+          headers (Optional[dict]): Dictionary with key-value pairs, that carry meta information on the payload.
         """
 
     @abstractmethod
     async def subscribe(
-        self, subject: str, callback: Callable[[bytes], None]
+        self, subject: str, callback: Callable[[bytes, dict], None]
     ) -> Subscriber:
         """
         Subscribes to the `subject` topic, and calls the `callback` function with the inbound messages
         so the messages will be processed asychronously.
-          :param subject: Subject that the subscriber will observe.
-          :param callback: a Callable function, that the subscriber will call.
+
+        Args:
+          subject: Subject that the subscriber will observe.
+          callback: a Callable function, that the subscriber will call.
         """
 
     @abstractmethod
-    async def request(self, subject: str, payload: bytes, timeout: float):
+    async def request(
+        self, subject: str, payload: bytes, timeout: float, headers: Optional[dict]
+    ):
         """
         Send `payload` as a request message through the `subject` topic and expects a response until `timeout`.
         Returns with a future that is the response.
-          :param subject: Subject to which the request will be sent.
-          :param payload: Message data.
-          :param timeout: Timeout in seconds, until the request waits for the response.
+
+        Args:
+          subject: Subject to which the request will be sent.
+          payload: Message data.
+          timeout: Timeout in seconds, until the request waits for the response.
         """
 
     @abstractmethod
-    async def response(self, subject: str, service_fun: Callable[[bytes], None]):
+    async def response(self, subject: str, service_fun: Callable[[bytes, dict], None]):
         """
         Subscribes to the `subject` topic, and calls the `service_fun` call-back function
         with the inbound messages, then respond with the return value of the `service` function.
-          :param subject: Subject that the service as a subscriber will observe.
-          :param service_fun: a Callable function. Its return value will be the response.
+
+        Args:
+          subject: Subject that the service as a subscriber will observe.
+          service_fun: a Callable function. Its return value will be the response.
         """
 
     # Functions for durable subjects
     @abstractmethod
-    async def publish_durable(self, subject: str, payload: bytes):
+    async def publish_durable(
+        self, subject: str, payload: bytes, headers: Optional[dict]
+    ):
         """
         Publishes `data` to the cluster into the `subject` and wait for an ACK.
+
+        Args:
+          subject: Subject that the subscriber will observe.
+          payload: Message data.
+          headers: Dictionary with key-value pairs, that carry meta information on the payload.
         """
 
     @abstractmethod
     async def publish_async_durable(
-        self, subject: str, payload: bytes, ack_handler: Callable[[bool], None]
+        self,
+        subject: str,
+        payload: bytes,
+        ack_handler: Callable[[bool], None],
+        headers: Optional[dict],
     ):
         """
         Publishes the `payload` to the `subject` topic and
         asynchronously process the ACK or error state via the `ack_handler` callback function.
+
+        Args:
+          subject: Subject that the subscriber will observe.
+          payload: Message data.
+          ack_handler: Callback function for acknowledge handling.
+          headers: Dictionary with key-value pairs, that carry meta information on the payload.
         """
 
     @abstractmethod
@@ -82,6 +110,10 @@ class Messenger(ABC):
         """
         Subscribes to the durable `subject`, and call `callback` with the received content.
         Automatically acknowledges to the subject the take-over of the message.
+
+        Args:
+          subject: Subject that the subscriber will observe.
+          callback: a Callable function, that the subscriber will call.
         """
 
     @abstractmethod
@@ -92,4 +124,8 @@ class Messenger(ABC):
         Subscribes to the durable `subject`, and call `callback` with the received content.
         The second argument of the `callback` callback is the acknowledge callback function,
         that has to be called by the consumer of the content.
+
+        Args:
+          subject: Subject that the subscriber will observe.
+          callback: a Callable function, that the subscriber will call.
         """
