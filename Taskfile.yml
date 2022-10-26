@@ -166,4 +166,4 @@ tasks:
   start-nats-box:
     desc: Starts the nats toolbox in a separate container
     cmds:
-      -  docker run --network py-msgp_py-msgp-network -it --rm -v "$(pwd)/sbox:/sbox" natsio/nats-box
+      -  docker run --network py-msgp_py-msgp-network -it --rm -v "$(pwd)/scripts:/scripts" natsio/nats-box

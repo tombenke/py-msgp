@@ -28,9 +28,9 @@ services:
   init-nats-jetstream:
     container_name: init-nats-jetstream
     image: natsio/nats-box:0.8.1
-    command: -c 'sh /sbox/init-nats-jetstream.sh'
+    command: -c 'sh /scripts/init-nats-jetstream.sh'
     volumes:
-      - ./init-nats-jetstream.sh:/sbox/init-nats-jetstream.sh
+      - ./scripts/init-nats-jetstream.sh:/scripts/init-nats-jetstream.sh
     networks:
       py-msgp-network:
         aliases:
