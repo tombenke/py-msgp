@@ -3,8 +3,9 @@ The MessageProcessorActor class.
 """
 from typing import Callable
 from loguru import logger
-from messenger.messenger import Messenger
-from messenger.subscriber import Subscriber
+from opentelemetry import trace
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+from messenger.messenger import Messenger, Subscriber
 
 
 class MessageProcessorActor:
@@ -47,13 +48,37 @@ class MessageProcessorActor:
         await self.messenger.open()
 
         async def actor_function_wrapper(payload: bytes, headers: dict) -> None:
-            outbound_payload = await self.actor_function(payload, headers)
+            outbound_payload = payload
             outbound_headers = (
                 headers  # NOTE: May actor_function should return with modified headers
             )
+            tracer = trace.get_tracer(__name__)
+            propagator = TraceContextTextMapPropagator()
+            if headers is None:
+                headers = {}
+            ctx = propagator.extract(headers)
+            with tracer.start_as_current_span(
+                f"{self.inbound_subject} process",
+                kind=trace.SpanKind.CONSUMER,
+                context=ctx,
+            ) as span:
+                self.logger.debug(f"span: {span} ctx: {ctx}")
+                if span.is_recording():
+                    span.set_attribute("messaging.system", "NATS")
+                    span.add_event(
+                        "log",
+                        {
+                            "log.severity": "INFO",
+                            "log.message": f"MPA processor actor function call from {self.inbound_subject} to {self.outbound_subject} subject",
+                        },
+                    )
+                outbound_payload = await self.actor_function(payload, headers)
             self.logger.debug(
-                f"MessageProcessorActor.actor_function_wrapper({payload}) -> '{outbound_payload}'"
+                f"MessageProcessorActor.actor_function_wrapper(payload: {payload}, headers: {headers}) ->"
+                f"'payload: {outbound_payload}, headers: {outbound_headers}'"
             )
+
+            propagator.inject(outbound_headers)
             if self.durable_out:
                 await self.messenger.publish_durable(
                     self.outbound_subject, outbound_payload, outbound_headers

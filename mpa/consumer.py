@@ -3,8 +3,9 @@ The MessageConsumerActor class.
 """
 from typing import Callable
 from loguru import logger
-from messenger.messenger import Messenger
-from messenger.subscriber import Subscriber
+from opentelemetry import trace
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+from messenger.messenger import Messenger, Subscriber
 
 
 class MessageConsumerActor:
@@ -38,13 +39,44 @@ class MessageConsumerActor:
         """
         self.logger.debug("MessageConsumerActor.open()")
         await self.messenger.open()
+
+        def actor_fun_wrapper(actor_fun):
+            async def actor_fun_wrapped(payload: bytes, headers: dict) -> bytes:
+                tracer = trace.get_tracer(__name__)
+                self.logger.debug(
+                    f"actor_fun_wrapped() headers with context: {headers}"
+                )
+                propagator = TraceContextTextMapPropagator()
+                if headers is None:
+                    headers = {}
+                ctx = propagator.extract(headers)
+                with tracer.start_as_current_span(
+                    f"{self.inbound_subject} receive",
+                    kind=trace.SpanKind.CONSUMER,
+                    context=ctx,
+                ) as span:
+                    self.logger.debug(f"span: {span} ctx: {ctx}")
+                    if span.is_recording():
+                        span.set_attribute("messaging.system", "NATS")
+                        span.add_event(
+                            "log",
+                            {
+                                "log.severity": "INFO",
+                                "log.message": f"MPA consumer service function call through the {self.inbound_subject} subject",
+                            },
+                        )
+                    response = await actor_fun(payload, headers)
+                return response
+
+            return actor_fun_wrapped
+
         if self.durable:
             self.subscriber = await self.messenger.subscribe_durable_with_ack(
-                self.inbound_subject, self.actor_function
+                self.inbound_subject, actor_fun_wrapper(self.actor_function)
             )
         else:
             self.subscriber = await self.messenger.subscribe(
-                self.inbound_subject, self.actor_function
+                self.inbound_subject, actor_fun_wrapper(self.actor_function)
             )
 
     async def close(self):

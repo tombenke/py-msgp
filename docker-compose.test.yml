@@ -38,5 +38,25 @@ services:
     depends_on:
       - nats
 
+  # Jaeger
+  # NOTE: This container is used only for the examples
+  jaeger-all-in-one:
+    container_name: jaeger
+    command: ["--query.max-clock-skew-adjustment", "0"]
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686" # Web HTTP
+      - "14268:14268" # The HTTP port for the collector service
+      - "14250:14250" # The gRPC port for the collector service
+      - "5778:5778"   # Agent config HTTP
+      - "4317:4317"   # OTLP Receiver gRPC port
+      - "4318:4318"   # OTLP Receiver HTTP port
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true" # Enables/Disables OTLP Receiver
+    networks:
+      py-msgp-network:
+        aliases:
+          - jaeger-all-in-one
+
 networks:
   py-msgp-network:

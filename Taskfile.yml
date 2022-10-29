@@ -70,7 +70,9 @@ tasks:
       - pylint messenger/
       - pylint nats_messenger/
       - pylint rpc/
+      - pylint rpc/examples
       - pylint mpa/
+      - pylint mpa/examples
 
   build:
     desc: Build
@@ -117,7 +119,7 @@ tasks:
     desc: Generate module documentation into the docs/ folder
     cmds:
       - echo {{.VERSION}}
-      - pdoc -o docs -d google messenger/ nats_messenger/ rpc/ mpa/ --footer-text="py-msgp {{.VERSION}}"
+      - pdoc -o docs -d google messenger/ nats_messenger/ rpc/ rpc/examples mpa/ mpa/examples --footer-text="py-msgp {{.VERSION}}"
 
   clean:
     desc: Clean temporary files and folders

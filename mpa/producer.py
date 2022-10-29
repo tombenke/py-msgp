@@ -3,6 +3,8 @@ The MessageProducerActor class.
 """
 from typing import Callable
 from loguru import logger
+from opentelemetry import trace
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 from messenger.messenger import Messenger
 
 
@@ -51,14 +53,36 @@ class MessageProducerActor:
         that forwards it to the outbound channel.
         """
         outbound_payload = payload
-        if self.actor_function is not None:
-            outbound_payload = await self.actor_function(payload, headers=headers)
+        tracer = trace.get_tracer(__name__)
+        propagator = TraceContextTextMapPropagator()
+        if headers is None:
+            headers = {}
+        ctx = propagator.extract(headers)
 
-        if self.durable:
-            await self.messenger.publish_durable(
-                self.outbound_subject, outbound_payload
-            )
-        else:
-            await self.messenger.publish(
-                self.outbound_subject, outbound_payload, headers=headers
-            )
+        with tracer.start_as_current_span(
+            f"{self.outbound_subject} send", kind=trace.SpanKind.PRODUCER, context=ctx
+        ) as span:
+            if span.is_recording():
+                span.set_attribute("messaging.system", "NATS")
+                span.add_event(
+                    "log",
+                    {
+                        "log.severity": "INFO",
+                        "log.message": f"MPA producer publish through {self.outbound_subject} subject",
+                    },
+                )
+                self.logger.debug(f"next() headers with context: {headers}")
+                propagator.inject(headers)
+                self.logger.debug(f"carrier: {headers}")
+
+            if self.actor_function is not None:
+                outbound_payload = await self.actor_function(payload, headers=headers)
+
+            if self.durable:
+                await self.messenger.publish_durable(
+                    self.outbound_subject, outbound_payload, headers=headers
+                )
+            else:
+                await self.messenger.publish(
+                    self.outbound_subject, outbound_payload, headers=headers
+                )
