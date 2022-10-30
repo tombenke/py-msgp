@@ -69,7 +69,7 @@
     </ul>
 
 
-            <footer>py-msgp 9de2f58</footer>
+            <footer>py-msgp e7858f5</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
             built with <span class="visually-hidden">pdoc</span><img
@@ -142,7 +142,7 @@
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>    <span class="nd">@abstractmethod</span>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">request</span><span class="p">(</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>    <span class="p">):</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
 </span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>        <span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">        Send `payload` as a request message through the `subject` topic and expects a response until `timeout`.</span>
 </span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        Returns with a future that is the response.</span>
@@ -151,76 +151,81 @@
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">          subject: Subject to which the request will be sent.</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">          payload: Message data.</span>
 </span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">          timeout: Timeout in seconds, until the request waits for the response.</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">          headers: The key-value pairs of the request headers</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">service_fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">        Subscribes to the `subject` topic, and calls the `service_fun` call-back function</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">        with the inbound messages, then respond with the return value of the `service` function.</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">        Args:</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">          subject: Subject that the service as a subscriber will observe.</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">          service_fun: a Callable function. Its return value will be the response.</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">        Return:</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">          - payload: The payload of the response</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">          - headers: The key-value pairs of the response headers</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">service_fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">        Subscribes to the `subject` topic, and calls the `service_fun` call-back function</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">        with the inbound messages, then respond with the return value of the `service` function.</span>
 </span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>    <span class="c1"># Functions for durable subjects</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_durable</span><span class="p">(</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>    <span class="p">):</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">        Publishes `data` to the cluster into the `subject` and wait for an ACK.</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">        Args:</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">          payload: Message data.</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_async_durable</span><span class="p">(</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>        <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>        <span class="n">ack_handler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>    <span class="p">):</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">        Publishes the `payload` to the `subject` topic and</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">        asynchronously process the ACK or error state via the `ack_handler` callback function.</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">        Args:</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">          payload: Message data.</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">          ack_handler: Callback function for acknowledge handling.</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">        Automatically acknowledges to the subject the take-over of the message.</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">        Args:</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">        Args:</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">          subject: Subject that the service as a subscriber will observe.</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">          service_fun: a Callable function. Its return value will be the response.</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>    <span class="c1"># Functions for durable subjects</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_durable</span><span class="p">(</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>    <span class="p">):</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">        Publishes `data` to the cluster into the `subject` and wait for an ACK.</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">        Args:</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">          payload: Message data.</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_async_durable</span><span class="p">(</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>        <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>        <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="n">ack_handler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>        <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="p">):</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">        Publishes the `payload` to the `subject` topic and</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">        asynchronously process the ACK or error state via the `ack_handler` callback function.</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">        Args:</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">          payload: Message data.</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">          ack_handler: Callback function for acknowledge handling.</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">        Automatically acknowledges to the subject the take-over of the message.</span>
 </span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable_with_ack</span><span class="p">(</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>    <span class="p">):</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="sd">        The second argument of the `callback` callback is the acknowledge callback function,</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="sd">        that has to be called by the consumer of the content.</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="sd">        Args:</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="sd">        Args:</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable_with_ack</span><span class="p">(</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>    <span class="p">):</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">        The second argument of the `callback` callback is the acknowledge callback function,</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="sd">        that has to be called by the consumer of the content.</span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a><span class="sd">        Args:</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -282,7 +287,7 @@
 </span><span id="Messenger-51"><a href="#Messenger-51"><span class="linenos"> 51</span></a>    <span class="nd">@abstractmethod</span>
 </span><span id="Messenger-52"><a href="#Messenger-52"><span class="linenos"> 52</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">request</span><span class="p">(</span>
 </span><span id="Messenger-53"><a href="#Messenger-53"><span class="linenos"> 53</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
-</span><span id="Messenger-54"><a href="#Messenger-54"><span class="linenos"> 54</span></a>    <span class="p">):</span>
+</span><span id="Messenger-54"><a href="#Messenger-54"><span class="linenos"> 54</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
 </span><span id="Messenger-55"><a href="#Messenger-55"><span class="linenos"> 55</span></a>        <span class="sd">&quot;&quot;&quot;</span>
 </span><span id="Messenger-56"><a href="#Messenger-56"><span class="linenos"> 56</span></a><span class="sd">        Send `payload` as a request message through the `subject` topic and expects a response until `timeout`.</span>
 </span><span id="Messenger-57"><a href="#Messenger-57"><span class="linenos"> 57</span></a><span class="sd">        Returns with a future that is the response.</span>
@@ -291,76 +296,81 @@
 </span><span id="Messenger-60"><a href="#Messenger-60"><span class="linenos"> 60</span></a><span class="sd">          subject: Subject to which the request will be sent.</span>
 </span><span id="Messenger-61"><a href="#Messenger-61"><span class="linenos"> 61</span></a><span class="sd">          payload: Message data.</span>
 </span><span id="Messenger-62"><a href="#Messenger-62"><span class="linenos"> 62</span></a><span class="sd">          timeout: Timeout in seconds, until the request waits for the response.</span>
-</span><span id="Messenger-63"><a href="#Messenger-63"><span class="linenos"> 63</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Messenger-63"><a href="#Messenger-63"><span class="linenos"> 63</span></a><span class="sd">          headers: The key-value pairs of the request headers</span>
 </span><span id="Messenger-64"><a href="#Messenger-64"><span class="linenos"> 64</span></a>
-</span><span id="Messenger-65"><a href="#Messenger-65"><span class="linenos"> 65</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Messenger-66"><a href="#Messenger-66"><span class="linenos"> 66</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">service_fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
-</span><span id="Messenger-67"><a href="#Messenger-67"><span class="linenos"> 67</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Messenger-68"><a href="#Messenger-68"><span class="linenos"> 68</span></a><span class="sd">        Subscribes to the `subject` topic, and calls the `service_fun` call-back function</span>
-</span><span id="Messenger-69"><a href="#Messenger-69"><span class="linenos"> 69</span></a><span class="sd">        with the inbound messages, then respond with the return value of the `service` function.</span>
-</span><span id="Messenger-70"><a href="#Messenger-70"><span class="linenos"> 70</span></a>
-</span><span id="Messenger-71"><a href="#Messenger-71"><span class="linenos"> 71</span></a><span class="sd">        Args:</span>
-</span><span id="Messenger-72"><a href="#Messenger-72"><span class="linenos"> 72</span></a><span class="sd">          subject: Subject that the service as a subscriber will observe.</span>
-</span><span id="Messenger-73"><a href="#Messenger-73"><span class="linenos"> 73</span></a><span class="sd">          service_fun: a Callable function. Its return value will be the response.</span>
-</span><span id="Messenger-74"><a href="#Messenger-74"><span class="linenos"> 74</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Messenger-65"><a href="#Messenger-65"><span class="linenos"> 65</span></a><span class="sd">        Return:</span>
+</span><span id="Messenger-66"><a href="#Messenger-66"><span class="linenos"> 66</span></a><span class="sd">          - payload: The payload of the response</span>
+</span><span id="Messenger-67"><a href="#Messenger-67"><span class="linenos"> 67</span></a><span class="sd">          - headers: The key-value pairs of the response headers</span>
+</span><span id="Messenger-68"><a href="#Messenger-68"><span class="linenos"> 68</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Messenger-69"><a href="#Messenger-69"><span class="linenos"> 69</span></a>
+</span><span id="Messenger-70"><a href="#Messenger-70"><span class="linenos"> 70</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Messenger-71"><a href="#Messenger-71"><span class="linenos"> 71</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">service_fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
+</span><span id="Messenger-72"><a href="#Messenger-72"><span class="linenos"> 72</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Messenger-73"><a href="#Messenger-73"><span class="linenos"> 73</span></a><span class="sd">        Subscribes to the `subject` topic, and calls the `service_fun` call-back function</span>
+</span><span id="Messenger-74"><a href="#Messenger-74"><span class="linenos"> 74</span></a><span class="sd">        with the inbound messages, then respond with the return value of the `service` function.</span>
 </span><span id="Messenger-75"><a href="#Messenger-75"><span class="linenos"> 75</span></a>
-</span><span id="Messenger-76"><a href="#Messenger-76"><span class="linenos"> 76</span></a>    <span class="c1"># Functions for durable subjects</span>
-</span><span id="Messenger-77"><a href="#Messenger-77"><span class="linenos"> 77</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Messenger-78"><a href="#Messenger-78"><span class="linenos"> 78</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_durable</span><span class="p">(</span>
-</span><span id="Messenger-79"><a href="#Messenger-79"><span class="linenos"> 79</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
-</span><span id="Messenger-80"><a href="#Messenger-80"><span class="linenos"> 80</span></a>    <span class="p">):</span>
-</span><span id="Messenger-81"><a href="#Messenger-81"><span class="linenos"> 81</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Messenger-82"><a href="#Messenger-82"><span class="linenos"> 82</span></a><span class="sd">        Publishes `data` to the cluster into the `subject` and wait for an ACK.</span>
-</span><span id="Messenger-83"><a href="#Messenger-83"><span class="linenos"> 83</span></a>
-</span><span id="Messenger-84"><a href="#Messenger-84"><span class="linenos"> 84</span></a><span class="sd">        Args:</span>
-</span><span id="Messenger-85"><a href="#Messenger-85"><span class="linenos"> 85</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="Messenger-86"><a href="#Messenger-86"><span class="linenos"> 86</span></a><span class="sd">          payload: Message data.</span>
-</span><span id="Messenger-87"><a href="#Messenger-87"><span class="linenos"> 87</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
-</span><span id="Messenger-88"><a href="#Messenger-88"><span class="linenos"> 88</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Messenger-89"><a href="#Messenger-89"><span class="linenos"> 89</span></a>
-</span><span id="Messenger-90"><a href="#Messenger-90"><span class="linenos"> 90</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Messenger-91"><a href="#Messenger-91"><span class="linenos"> 91</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_async_durable</span><span class="p">(</span>
-</span><span id="Messenger-92"><a href="#Messenger-92"><span class="linenos"> 92</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Messenger-93"><a href="#Messenger-93"><span class="linenos"> 93</span></a>        <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="Messenger-94"><a href="#Messenger-94"><span class="linenos"> 94</span></a>        <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
-</span><span id="Messenger-95"><a href="#Messenger-95"><span class="linenos"> 95</span></a>        <span class="n">ack_handler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
-</span><span id="Messenger-96"><a href="#Messenger-96"><span class="linenos"> 96</span></a>        <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
-</span><span id="Messenger-97"><a href="#Messenger-97"><span class="linenos"> 97</span></a>    <span class="p">):</span>
-</span><span id="Messenger-98"><a href="#Messenger-98"><span class="linenos"> 98</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Messenger-99"><a href="#Messenger-99"><span class="linenos"> 99</span></a><span class="sd">        Publishes the `payload` to the `subject` topic and</span>
-</span><span id="Messenger-100"><a href="#Messenger-100"><span class="linenos">100</span></a><span class="sd">        asynchronously process the ACK or error state via the `ack_handler` callback function.</span>
-</span><span id="Messenger-101"><a href="#Messenger-101"><span class="linenos">101</span></a>
-</span><span id="Messenger-102"><a href="#Messenger-102"><span class="linenos">102</span></a><span class="sd">        Args:</span>
-</span><span id="Messenger-103"><a href="#Messenger-103"><span class="linenos">103</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="Messenger-104"><a href="#Messenger-104"><span class="linenos">104</span></a><span class="sd">          payload: Message data.</span>
-</span><span id="Messenger-105"><a href="#Messenger-105"><span class="linenos">105</span></a><span class="sd">          ack_handler: Callback function for acknowledge handling.</span>
-</span><span id="Messenger-106"><a href="#Messenger-106"><span class="linenos">106</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
-</span><span id="Messenger-107"><a href="#Messenger-107"><span class="linenos">107</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Messenger-108"><a href="#Messenger-108"><span class="linenos">108</span></a>
-</span><span id="Messenger-109"><a href="#Messenger-109"><span class="linenos">109</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Messenger-110"><a href="#Messenger-110"><span class="linenos">110</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
-</span><span id="Messenger-111"><a href="#Messenger-111"><span class="linenos">111</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Messenger-112"><a href="#Messenger-112"><span class="linenos">112</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
-</span><span id="Messenger-113"><a href="#Messenger-113"><span class="linenos">113</span></a><span class="sd">        Automatically acknowledges to the subject the take-over of the message.</span>
-</span><span id="Messenger-114"><a href="#Messenger-114"><span class="linenos">114</span></a>
-</span><span id="Messenger-115"><a href="#Messenger-115"><span class="linenos">115</span></a><span class="sd">        Args:</span>
-</span><span id="Messenger-116"><a href="#Messenger-116"><span class="linenos">116</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="Messenger-117"><a href="#Messenger-117"><span class="linenos">117</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
-</span><span id="Messenger-118"><a href="#Messenger-118"><span class="linenos">118</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Messenger-76"><a href="#Messenger-76"><span class="linenos"> 76</span></a><span class="sd">        Args:</span>
+</span><span id="Messenger-77"><a href="#Messenger-77"><span class="linenos"> 77</span></a><span class="sd">          subject: Subject that the service as a subscriber will observe.</span>
+</span><span id="Messenger-78"><a href="#Messenger-78"><span class="linenos"> 78</span></a><span class="sd">          service_fun: a Callable function. Its return value will be the response.</span>
+</span><span id="Messenger-79"><a href="#Messenger-79"><span class="linenos"> 79</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Messenger-80"><a href="#Messenger-80"><span class="linenos"> 80</span></a>
+</span><span id="Messenger-81"><a href="#Messenger-81"><span class="linenos"> 81</span></a>    <span class="c1"># Functions for durable subjects</span>
+</span><span id="Messenger-82"><a href="#Messenger-82"><span class="linenos"> 82</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Messenger-83"><a href="#Messenger-83"><span class="linenos"> 83</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_durable</span><span class="p">(</span>
+</span><span id="Messenger-84"><a href="#Messenger-84"><span class="linenos"> 84</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
+</span><span id="Messenger-85"><a href="#Messenger-85"><span class="linenos"> 85</span></a>    <span class="p">):</span>
+</span><span id="Messenger-86"><a href="#Messenger-86"><span class="linenos"> 86</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Messenger-87"><a href="#Messenger-87"><span class="linenos"> 87</span></a><span class="sd">        Publishes `data` to the cluster into the `subject` and wait for an ACK.</span>
+</span><span id="Messenger-88"><a href="#Messenger-88"><span class="linenos"> 88</span></a>
+</span><span id="Messenger-89"><a href="#Messenger-89"><span class="linenos"> 89</span></a><span class="sd">        Args:</span>
+</span><span id="Messenger-90"><a href="#Messenger-90"><span class="linenos"> 90</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="Messenger-91"><a href="#Messenger-91"><span class="linenos"> 91</span></a><span class="sd">          payload: Message data.</span>
+</span><span id="Messenger-92"><a href="#Messenger-92"><span class="linenos"> 92</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
+</span><span id="Messenger-93"><a href="#Messenger-93"><span class="linenos"> 93</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Messenger-94"><a href="#Messenger-94"><span class="linenos"> 94</span></a>
+</span><span id="Messenger-95"><a href="#Messenger-95"><span class="linenos"> 95</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Messenger-96"><a href="#Messenger-96"><span class="linenos"> 96</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_async_durable</span><span class="p">(</span>
+</span><span id="Messenger-97"><a href="#Messenger-97"><span class="linenos"> 97</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Messenger-98"><a href="#Messenger-98"><span class="linenos"> 98</span></a>        <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="Messenger-99"><a href="#Messenger-99"><span class="linenos"> 99</span></a>        <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+</span><span id="Messenger-100"><a href="#Messenger-100"><span class="linenos">100</span></a>        <span class="n">ack_handler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
+</span><span id="Messenger-101"><a href="#Messenger-101"><span class="linenos">101</span></a>        <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+</span><span id="Messenger-102"><a href="#Messenger-102"><span class="linenos">102</span></a>    <span class="p">):</span>
+</span><span id="Messenger-103"><a href="#Messenger-103"><span class="linenos">103</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Messenger-104"><a href="#Messenger-104"><span class="linenos">104</span></a><span class="sd">        Publishes the `payload` to the `subject` topic and</span>
+</span><span id="Messenger-105"><a href="#Messenger-105"><span class="linenos">105</span></a><span class="sd">        asynchronously process the ACK or error state via the `ack_handler` callback function.</span>
+</span><span id="Messenger-106"><a href="#Messenger-106"><span class="linenos">106</span></a>
+</span><span id="Messenger-107"><a href="#Messenger-107"><span class="linenos">107</span></a><span class="sd">        Args:</span>
+</span><span id="Messenger-108"><a href="#Messenger-108"><span class="linenos">108</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="Messenger-109"><a href="#Messenger-109"><span class="linenos">109</span></a><span class="sd">          payload: Message data.</span>
+</span><span id="Messenger-110"><a href="#Messenger-110"><span class="linenos">110</span></a><span class="sd">          ack_handler: Callback function for acknowledge handling.</span>
+</span><span id="Messenger-111"><a href="#Messenger-111"><span class="linenos">111</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
+</span><span id="Messenger-112"><a href="#Messenger-112"><span class="linenos">112</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Messenger-113"><a href="#Messenger-113"><span class="linenos">113</span></a>
+</span><span id="Messenger-114"><a href="#Messenger-114"><span class="linenos">114</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Messenger-115"><a href="#Messenger-115"><span class="linenos">115</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
+</span><span id="Messenger-116"><a href="#Messenger-116"><span class="linenos">116</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Messenger-117"><a href="#Messenger-117"><span class="linenos">117</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
+</span><span id="Messenger-118"><a href="#Messenger-118"><span class="linenos">118</span></a><span class="sd">        Automatically acknowledges to the subject the take-over of the message.</span>
 </span><span id="Messenger-119"><a href="#Messenger-119"><span class="linenos">119</span></a>
-</span><span id="Messenger-120"><a href="#Messenger-120"><span class="linenos">120</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Messenger-121"><a href="#Messenger-121"><span class="linenos">121</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable_with_ack</span><span class="p">(</span>
-</span><span id="Messenger-122"><a href="#Messenger-122"><span class="linenos">122</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span>
-</span><span id="Messenger-123"><a href="#Messenger-123"><span class="linenos">123</span></a>    <span class="p">):</span>
-</span><span id="Messenger-124"><a href="#Messenger-124"><span class="linenos">124</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Messenger-125"><a href="#Messenger-125"><span class="linenos">125</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
-</span><span id="Messenger-126"><a href="#Messenger-126"><span class="linenos">126</span></a><span class="sd">        The second argument of the `callback` callback is the acknowledge callback function,</span>
-</span><span id="Messenger-127"><a href="#Messenger-127"><span class="linenos">127</span></a><span class="sd">        that has to be called by the consumer of the content.</span>
-</span><span id="Messenger-128"><a href="#Messenger-128"><span class="linenos">128</span></a>
-</span><span id="Messenger-129"><a href="#Messenger-129"><span class="linenos">129</span></a><span class="sd">        Args:</span>
-</span><span id="Messenger-130"><a href="#Messenger-130"><span class="linenos">130</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="Messenger-131"><a href="#Messenger-131"><span class="linenos">131</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
-</span><span id="Messenger-132"><a href="#Messenger-132"><span class="linenos">132</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Messenger-120"><a href="#Messenger-120"><span class="linenos">120</span></a><span class="sd">        Args:</span>
+</span><span id="Messenger-121"><a href="#Messenger-121"><span class="linenos">121</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="Messenger-122"><a href="#Messenger-122"><span class="linenos">122</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
+</span><span id="Messenger-123"><a href="#Messenger-123"><span class="linenos">123</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Messenger-124"><a href="#Messenger-124"><span class="linenos">124</span></a>
+</span><span id="Messenger-125"><a href="#Messenger-125"><span class="linenos">125</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Messenger-126"><a href="#Messenger-126"><span class="linenos">126</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable_with_ack</span><span class="p">(</span>
+</span><span id="Messenger-127"><a href="#Messenger-127"><span class="linenos">127</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span>
+</span><span id="Messenger-128"><a href="#Messenger-128"><span class="linenos">128</span></a>    <span class="p">):</span>
+</span><span id="Messenger-129"><a href="#Messenger-129"><span class="linenos">129</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Messenger-130"><a href="#Messenger-130"><span class="linenos">130</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
+</span><span id="Messenger-131"><a href="#Messenger-131"><span class="linenos">131</span></a><span class="sd">        The second argument of the `callback` callback is the acknowledge callback function,</span>
+</span><span id="Messenger-132"><a href="#Messenger-132"><span class="linenos">132</span></a><span class="sd">        that has to be called by the consumer of the content.</span>
+</span><span id="Messenger-133"><a href="#Messenger-133"><span class="linenos">133</span></a>
+</span><span id="Messenger-134"><a href="#Messenger-134"><span class="linenos">134</span></a><span class="sd">        Args:</span>
+</span><span id="Messenger-135"><a href="#Messenger-135"><span class="linenos">135</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="Messenger-136"><a href="#Messenger-136"><span class="linenos">136</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
+</span><span id="Messenger-137"><a href="#Messenger-137"><span class="linenos">137</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -503,7 +513,7 @@ so the messages will be processed asychronously.</p>
                     <div class="decorator">@abstractmethod</div>
 
         <span class="def">async def</span>
-        <span class="name">request</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">subject</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span>,</span><span class="param">	<span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span>,</span><span class="param">	<span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span></span><span class="return-annotation">):</span></span>
+        <span class="name">request</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">subject</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span>,</span><span class="param">	<span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span>,</span><span class="param">	<span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="Messenger.request-view-source"><span>View Source</span></label>
 
@@ -512,7 +522,7 @@ so the messages will be processed asychronously.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.request-51"><a href="#Messenger.request-51"><span class="linenos">51</span></a>    <span class="nd">@abstractmethod</span>
 </span><span id="Messenger.request-52"><a href="#Messenger.request-52"><span class="linenos">52</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">request</span><span class="p">(</span>
 </span><span id="Messenger.request-53"><a href="#Messenger.request-53"><span class="linenos">53</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
-</span><span id="Messenger.request-54"><a href="#Messenger.request-54"><span class="linenos">54</span></a>    <span class="p">):</span>
+</span><span id="Messenger.request-54"><a href="#Messenger.request-54"><span class="linenos">54</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
 </span><span id="Messenger.request-55"><a href="#Messenger.request-55"><span class="linenos">55</span></a>        <span class="sd">&quot;&quot;&quot;</span>
 </span><span id="Messenger.request-56"><a href="#Messenger.request-56"><span class="linenos">56</span></a><span class="sd">        Send `payload` as a request message through the `subject` topic and expects a response until `timeout`.</span>
 </span><span id="Messenger.request-57"><a href="#Messenger.request-57"><span class="linenos">57</span></a><span class="sd">        Returns with a future that is the response.</span>
@@ -521,7 +531,12 @@ so the messages will be processed asychronously.</p>
 </span><span id="Messenger.request-60"><a href="#Messenger.request-60"><span class="linenos">60</span></a><span class="sd">          subject: Subject to which the request will be sent.</span>
 </span><span id="Messenger.request-61"><a href="#Messenger.request-61"><span class="linenos">61</span></a><span class="sd">          payload: Message data.</span>
 </span><span id="Messenger.request-62"><a href="#Messenger.request-62"><span class="linenos">62</span></a><span class="sd">          timeout: Timeout in seconds, until the request waits for the response.</span>
-</span><span id="Messenger.request-63"><a href="#Messenger.request-63"><span class="linenos">63</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Messenger.request-63"><a href="#Messenger.request-63"><span class="linenos">63</span></a><span class="sd">          headers: The key-value pairs of the request headers</span>
+</span><span id="Messenger.request-64"><a href="#Messenger.request-64"><span class="linenos">64</span></a>
+</span><span id="Messenger.request-65"><a href="#Messenger.request-65"><span class="linenos">65</span></a><span class="sd">        Return:</span>
+</span><span id="Messenger.request-66"><a href="#Messenger.request-66"><span class="linenos">66</span></a><span class="sd">          - payload: The payload of the response</span>
+</span><span id="Messenger.request-67"><a href="#Messenger.request-67"><span class="linenos">67</span></a><span class="sd">          - headers: The key-value pairs of the response headers</span>
+</span><span id="Messenger.request-68"><a href="#Messenger.request-68"><span class="linenos">68</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -534,7 +549,17 @@ Returns with a future that is the response.</p>
 <li><strong>subject:</strong>  Subject to which the request will be sent.</li>
 <li><strong>payload:</strong>  Message data.</li>
 <li><strong>timeout:</strong>  Timeout in seconds, until the request waits for the response.</li>
+<li><strong>headers:</strong>  The key-value pairs of the request headers</li>
 </ul>
+
+<h6 id="return">Return</h6>
+
+<blockquote>
+  <ul>
+  <li>payload: The payload of the response</li>
+  <li>headers: The key-value pairs of the response headers</li>
+  </ul>
+</blockquote>
 </div>
 
 
@@ -551,16 +576,16 @@ Returns with a future that is the response.</p>
 
     </div>
     <a class="headerlink" href="#Messenger.response"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.response-65"><a href="#Messenger.response-65"><span class="linenos">65</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Messenger.response-66"><a href="#Messenger.response-66"><span class="linenos">66</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">service_fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
-</span><span id="Messenger.response-67"><a href="#Messenger.response-67"><span class="linenos">67</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Messenger.response-68"><a href="#Messenger.response-68"><span class="linenos">68</span></a><span class="sd">        Subscribes to the `subject` topic, and calls the `service_fun` call-back function</span>
-</span><span id="Messenger.response-69"><a href="#Messenger.response-69"><span class="linenos">69</span></a><span class="sd">        with the inbound messages, then respond with the return value of the `service` function.</span>
-</span><span id="Messenger.response-70"><a href="#Messenger.response-70"><span class="linenos">70</span></a>
-</span><span id="Messenger.response-71"><a href="#Messenger.response-71"><span class="linenos">71</span></a><span class="sd">        Args:</span>
-</span><span id="Messenger.response-72"><a href="#Messenger.response-72"><span class="linenos">72</span></a><span class="sd">          subject: Subject that the service as a subscriber will observe.</span>
-</span><span id="Messenger.response-73"><a href="#Messenger.response-73"><span class="linenos">73</span></a><span class="sd">          service_fun: a Callable function. Its return value will be the response.</span>
-</span><span id="Messenger.response-74"><a href="#Messenger.response-74"><span class="linenos">74</span></a><span class="sd">        &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.response-70"><a href="#Messenger.response-70"><span class="linenos">70</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Messenger.response-71"><a href="#Messenger.response-71"><span class="linenos">71</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">service_fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
+</span><span id="Messenger.response-72"><a href="#Messenger.response-72"><span class="linenos">72</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Messenger.response-73"><a href="#Messenger.response-73"><span class="linenos">73</span></a><span class="sd">        Subscribes to the `subject` topic, and calls the `service_fun` call-back function</span>
+</span><span id="Messenger.response-74"><a href="#Messenger.response-74"><span class="linenos">74</span></a><span class="sd">        with the inbound messages, then respond with the return value of the `service` function.</span>
+</span><span id="Messenger.response-75"><a href="#Messenger.response-75"><span class="linenos">75</span></a>
+</span><span id="Messenger.response-76"><a href="#Messenger.response-76"><span class="linenos">76</span></a><span class="sd">        Args:</span>
+</span><span id="Messenger.response-77"><a href="#Messenger.response-77"><span class="linenos">77</span></a><span class="sd">          subject: Subject that the service as a subscriber will observe.</span>
+</span><span id="Messenger.response-78"><a href="#Messenger.response-78"><span class="linenos">78</span></a><span class="sd">          service_fun: a Callable function. Its return value will be the response.</span>
+</span><span id="Messenger.response-79"><a href="#Messenger.response-79"><span class="linenos">79</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -589,18 +614,18 @@ with the inbound messages, then respond with the return value of the <code>servi
 
     </div>
     <a class="headerlink" href="#Messenger.publish_durable"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.publish_durable-77"><a href="#Messenger.publish_durable-77"><span class="linenos">77</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Messenger.publish_durable-78"><a href="#Messenger.publish_durable-78"><span class="linenos">78</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_durable</span><span class="p">(</span>
-</span><span id="Messenger.publish_durable-79"><a href="#Messenger.publish_durable-79"><span class="linenos">79</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
-</span><span id="Messenger.publish_durable-80"><a href="#Messenger.publish_durable-80"><span class="linenos">80</span></a>    <span class="p">):</span>
-</span><span id="Messenger.publish_durable-81"><a href="#Messenger.publish_durable-81"><span class="linenos">81</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Messenger.publish_durable-82"><a href="#Messenger.publish_durable-82"><span class="linenos">82</span></a><span class="sd">        Publishes `data` to the cluster into the `subject` and wait for an ACK.</span>
-</span><span id="Messenger.publish_durable-83"><a href="#Messenger.publish_durable-83"><span class="linenos">83</span></a>
-</span><span id="Messenger.publish_durable-84"><a href="#Messenger.publish_durable-84"><span class="linenos">84</span></a><span class="sd">        Args:</span>
-</span><span id="Messenger.publish_durable-85"><a href="#Messenger.publish_durable-85"><span class="linenos">85</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="Messenger.publish_durable-86"><a href="#Messenger.publish_durable-86"><span class="linenos">86</span></a><span class="sd">          payload: Message data.</span>
-</span><span id="Messenger.publish_durable-87"><a href="#Messenger.publish_durable-87"><span class="linenos">87</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
-</span><span id="Messenger.publish_durable-88"><a href="#Messenger.publish_durable-88"><span class="linenos">88</span></a><span class="sd">        &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.publish_durable-82"><a href="#Messenger.publish_durable-82"><span class="linenos">82</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Messenger.publish_durable-83"><a href="#Messenger.publish_durable-83"><span class="linenos">83</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_durable</span><span class="p">(</span>
+</span><span id="Messenger.publish_durable-84"><a href="#Messenger.publish_durable-84"><span class="linenos">84</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
+</span><span id="Messenger.publish_durable-85"><a href="#Messenger.publish_durable-85"><span class="linenos">85</span></a>    <span class="p">):</span>
+</span><span id="Messenger.publish_durable-86"><a href="#Messenger.publish_durable-86"><span class="linenos">86</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Messenger.publish_durable-87"><a href="#Messenger.publish_durable-87"><span class="linenos">87</span></a><span class="sd">        Publishes `data` to the cluster into the `subject` and wait for an ACK.</span>
+</span><span id="Messenger.publish_durable-88"><a href="#Messenger.publish_durable-88"><span class="linenos">88</span></a>
+</span><span id="Messenger.publish_durable-89"><a href="#Messenger.publish_durable-89"><span class="linenos">89</span></a><span class="sd">        Args:</span>
+</span><span id="Messenger.publish_durable-90"><a href="#Messenger.publish_durable-90"><span class="linenos">90</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="Messenger.publish_durable-91"><a href="#Messenger.publish_durable-91"><span class="linenos">91</span></a><span class="sd">          payload: Message data.</span>
+</span><span id="Messenger.publish_durable-92"><a href="#Messenger.publish_durable-92"><span class="linenos">92</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
+</span><span id="Messenger.publish_durable-93"><a href="#Messenger.publish_durable-93"><span class="linenos">93</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -629,24 +654,24 @@ with the inbound messages, then respond with the return value of the <code>servi
 
     </div>
     <a class="headerlink" href="#Messenger.publish_async_durable"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.publish_async_durable-90"><a href="#Messenger.publish_async_durable-90"><span class="linenos"> 90</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Messenger.publish_async_durable-91"><a href="#Messenger.publish_async_durable-91"><span class="linenos"> 91</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_async_durable</span><span class="p">(</span>
-</span><span id="Messenger.publish_async_durable-92"><a href="#Messenger.publish_async_durable-92"><span class="linenos"> 92</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="Messenger.publish_async_durable-93"><a href="#Messenger.publish_async_durable-93"><span class="linenos"> 93</span></a>        <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="Messenger.publish_async_durable-94"><a href="#Messenger.publish_async_durable-94"><span class="linenos"> 94</span></a>        <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
-</span><span id="Messenger.publish_async_durable-95"><a href="#Messenger.publish_async_durable-95"><span class="linenos"> 95</span></a>        <span class="n">ack_handler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
-</span><span id="Messenger.publish_async_durable-96"><a href="#Messenger.publish_async_durable-96"><span class="linenos"> 96</span></a>        <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
-</span><span id="Messenger.publish_async_durable-97"><a href="#Messenger.publish_async_durable-97"><span class="linenos"> 97</span></a>    <span class="p">):</span>
-</span><span id="Messenger.publish_async_durable-98"><a href="#Messenger.publish_async_durable-98"><span class="linenos"> 98</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Messenger.publish_async_durable-99"><a href="#Messenger.publish_async_durable-99"><span class="linenos"> 99</span></a><span class="sd">        Publishes the `payload` to the `subject` topic and</span>
-</span><span id="Messenger.publish_async_durable-100"><a href="#Messenger.publish_async_durable-100"><span class="linenos">100</span></a><span class="sd">        asynchronously process the ACK or error state via the `ack_handler` callback function.</span>
-</span><span id="Messenger.publish_async_durable-101"><a href="#Messenger.publish_async_durable-101"><span class="linenos">101</span></a>
-</span><span id="Messenger.publish_async_durable-102"><a href="#Messenger.publish_async_durable-102"><span class="linenos">102</span></a><span class="sd">        Args:</span>
-</span><span id="Messenger.publish_async_durable-103"><a href="#Messenger.publish_async_durable-103"><span class="linenos">103</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="Messenger.publish_async_durable-104"><a href="#Messenger.publish_async_durable-104"><span class="linenos">104</span></a><span class="sd">          payload: Message data.</span>
-</span><span id="Messenger.publish_async_durable-105"><a href="#Messenger.publish_async_durable-105"><span class="linenos">105</span></a><span class="sd">          ack_handler: Callback function for acknowledge handling.</span>
-</span><span id="Messenger.publish_async_durable-106"><a href="#Messenger.publish_async_durable-106"><span class="linenos">106</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
-</span><span id="Messenger.publish_async_durable-107"><a href="#Messenger.publish_async_durable-107"><span class="linenos">107</span></a><span class="sd">        &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.publish_async_durable-95"><a href="#Messenger.publish_async_durable-95"><span class="linenos"> 95</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Messenger.publish_async_durable-96"><a href="#Messenger.publish_async_durable-96"><span class="linenos"> 96</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">publish_async_durable</span><span class="p">(</span>
+</span><span id="Messenger.publish_async_durable-97"><a href="#Messenger.publish_async_durable-97"><span class="linenos"> 97</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Messenger.publish_async_durable-98"><a href="#Messenger.publish_async_durable-98"><span class="linenos"> 98</span></a>        <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="Messenger.publish_async_durable-99"><a href="#Messenger.publish_async_durable-99"><span class="linenos"> 99</span></a>        <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+</span><span id="Messenger.publish_async_durable-100"><a href="#Messenger.publish_async_durable-100"><span class="linenos">100</span></a>        <span class="n">ack_handler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
+</span><span id="Messenger.publish_async_durable-101"><a href="#Messenger.publish_async_durable-101"><span class="linenos">101</span></a>        <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+</span><span id="Messenger.publish_async_durable-102"><a href="#Messenger.publish_async_durable-102"><span class="linenos">102</span></a>    <span class="p">):</span>
+</span><span id="Messenger.publish_async_durable-103"><a href="#Messenger.publish_async_durable-103"><span class="linenos">103</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Messenger.publish_async_durable-104"><a href="#Messenger.publish_async_durable-104"><span class="linenos">104</span></a><span class="sd">        Publishes the `payload` to the `subject` topic and</span>
+</span><span id="Messenger.publish_async_durable-105"><a href="#Messenger.publish_async_durable-105"><span class="linenos">105</span></a><span class="sd">        asynchronously process the ACK or error state via the `ack_handler` callback function.</span>
+</span><span id="Messenger.publish_async_durable-106"><a href="#Messenger.publish_async_durable-106"><span class="linenos">106</span></a>
+</span><span id="Messenger.publish_async_durable-107"><a href="#Messenger.publish_async_durable-107"><span class="linenos">107</span></a><span class="sd">        Args:</span>
+</span><span id="Messenger.publish_async_durable-108"><a href="#Messenger.publish_async_durable-108"><span class="linenos">108</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="Messenger.publish_async_durable-109"><a href="#Messenger.publish_async_durable-109"><span class="linenos">109</span></a><span class="sd">          payload: Message data.</span>
+</span><span id="Messenger.publish_async_durable-110"><a href="#Messenger.publish_async_durable-110"><span class="linenos">110</span></a><span class="sd">          ack_handler: Callback function for acknowledge handling.</span>
+</span><span id="Messenger.publish_async_durable-111"><a href="#Messenger.publish_async_durable-111"><span class="linenos">111</span></a><span class="sd">          headers: Dictionary with key-value pairs, that carry meta information on the payload.</span>
+</span><span id="Messenger.publish_async_durable-112"><a href="#Messenger.publish_async_durable-112"><span class="linenos">112</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -677,16 +702,16 @@ asynchronously process the ACK or error state via the <code>ack_handler</code> c
 
     </div>
     <a class="headerlink" href="#Messenger.subscribe_durable"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.subscribe_durable-109"><a href="#Messenger.subscribe_durable-109"><span class="linenos">109</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Messenger.subscribe_durable-110"><a href="#Messenger.subscribe_durable-110"><span class="linenos">110</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
-</span><span id="Messenger.subscribe_durable-111"><a href="#Messenger.subscribe_durable-111"><span class="linenos">111</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Messenger.subscribe_durable-112"><a href="#Messenger.subscribe_durable-112"><span class="linenos">112</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
-</span><span id="Messenger.subscribe_durable-113"><a href="#Messenger.subscribe_durable-113"><span class="linenos">113</span></a><span class="sd">        Automatically acknowledges to the subject the take-over of the message.</span>
-</span><span id="Messenger.subscribe_durable-114"><a href="#Messenger.subscribe_durable-114"><span class="linenos">114</span></a>
-</span><span id="Messenger.subscribe_durable-115"><a href="#Messenger.subscribe_durable-115"><span class="linenos">115</span></a><span class="sd">        Args:</span>
-</span><span id="Messenger.subscribe_durable-116"><a href="#Messenger.subscribe_durable-116"><span class="linenos">116</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="Messenger.subscribe_durable-117"><a href="#Messenger.subscribe_durable-117"><span class="linenos">117</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
-</span><span id="Messenger.subscribe_durable-118"><a href="#Messenger.subscribe_durable-118"><span class="linenos">118</span></a><span class="sd">        &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.subscribe_durable-114"><a href="#Messenger.subscribe_durable-114"><span class="linenos">114</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Messenger.subscribe_durable-115"><a href="#Messenger.subscribe_durable-115"><span class="linenos">115</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
+</span><span id="Messenger.subscribe_durable-116"><a href="#Messenger.subscribe_durable-116"><span class="linenos">116</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Messenger.subscribe_durable-117"><a href="#Messenger.subscribe_durable-117"><span class="linenos">117</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
+</span><span id="Messenger.subscribe_durable-118"><a href="#Messenger.subscribe_durable-118"><span class="linenos">118</span></a><span class="sd">        Automatically acknowledges to the subject the take-over of the message.</span>
+</span><span id="Messenger.subscribe_durable-119"><a href="#Messenger.subscribe_durable-119"><span class="linenos">119</span></a>
+</span><span id="Messenger.subscribe_durable-120"><a href="#Messenger.subscribe_durable-120"><span class="linenos">120</span></a><span class="sd">        Args:</span>
+</span><span id="Messenger.subscribe_durable-121"><a href="#Messenger.subscribe_durable-121"><span class="linenos">121</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="Messenger.subscribe_durable-122"><a href="#Messenger.subscribe_durable-122"><span class="linenos">122</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
+</span><span id="Messenger.subscribe_durable-123"><a href="#Messenger.subscribe_durable-123"><span class="linenos">123</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -715,19 +740,19 @@ Automatically acknowledges to the subject the take-over of the message.</p>
 
     </div>
     <a class="headerlink" href="#Messenger.subscribe_durable_with_ack"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.subscribe_durable_with_ack-120"><a href="#Messenger.subscribe_durable_with_ack-120"><span class="linenos">120</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Messenger.subscribe_durable_with_ack-121"><a href="#Messenger.subscribe_durable_with_ack-121"><span class="linenos">121</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable_with_ack</span><span class="p">(</span>
-</span><span id="Messenger.subscribe_durable_with_ack-122"><a href="#Messenger.subscribe_durable_with_ack-122"><span class="linenos">122</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span>
-</span><span id="Messenger.subscribe_durable_with_ack-123"><a href="#Messenger.subscribe_durable_with_ack-123"><span class="linenos">123</span></a>    <span class="p">):</span>
-</span><span id="Messenger.subscribe_durable_with_ack-124"><a href="#Messenger.subscribe_durable_with_ack-124"><span class="linenos">124</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Messenger.subscribe_durable_with_ack-125"><a href="#Messenger.subscribe_durable_with_ack-125"><span class="linenos">125</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
-</span><span id="Messenger.subscribe_durable_with_ack-126"><a href="#Messenger.subscribe_durable_with_ack-126"><span class="linenos">126</span></a><span class="sd">        The second argument of the `callback` callback is the acknowledge callback function,</span>
-</span><span id="Messenger.subscribe_durable_with_ack-127"><a href="#Messenger.subscribe_durable_with_ack-127"><span class="linenos">127</span></a><span class="sd">        that has to be called by the consumer of the content.</span>
-</span><span id="Messenger.subscribe_durable_with_ack-128"><a href="#Messenger.subscribe_durable_with_ack-128"><span class="linenos">128</span></a>
-</span><span id="Messenger.subscribe_durable_with_ack-129"><a href="#Messenger.subscribe_durable_with_ack-129"><span class="linenos">129</span></a><span class="sd">        Args:</span>
-</span><span id="Messenger.subscribe_durable_with_ack-130"><a href="#Messenger.subscribe_durable_with_ack-130"><span class="linenos">130</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
-</span><span id="Messenger.subscribe_durable_with_ack-131"><a href="#Messenger.subscribe_durable_with_ack-131"><span class="linenos">131</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
-</span><span id="Messenger.subscribe_durable_with_ack-132"><a href="#Messenger.subscribe_durable_with_ack-132"><span class="linenos">132</span></a><span class="sd">        &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Messenger.subscribe_durable_with_ack-125"><a href="#Messenger.subscribe_durable_with_ack-125"><span class="linenos">125</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Messenger.subscribe_durable_with_ack-126"><a href="#Messenger.subscribe_durable_with_ack-126"><span class="linenos">126</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">subscribe_durable_with_ack</span><span class="p">(</span>
+</span><span id="Messenger.subscribe_durable_with_ack-127"><a href="#Messenger.subscribe_durable_with_ack-127"><span class="linenos">127</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span>
+</span><span id="Messenger.subscribe_durable_with_ack-128"><a href="#Messenger.subscribe_durable_with_ack-128"><span class="linenos">128</span></a>    <span class="p">):</span>
+</span><span id="Messenger.subscribe_durable_with_ack-129"><a href="#Messenger.subscribe_durable_with_ack-129"><span class="linenos">129</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Messenger.subscribe_durable_with_ack-130"><a href="#Messenger.subscribe_durable_with_ack-130"><span class="linenos">130</span></a><span class="sd">        Subscribes to the durable `subject`, and call `callback` with the received content.</span>
+</span><span id="Messenger.subscribe_durable_with_ack-131"><a href="#Messenger.subscribe_durable_with_ack-131"><span class="linenos">131</span></a><span class="sd">        The second argument of the `callback` callback is the acknowledge callback function,</span>
+</span><span id="Messenger.subscribe_durable_with_ack-132"><a href="#Messenger.subscribe_durable_with_ack-132"><span class="linenos">132</span></a><span class="sd">        that has to be called by the consumer of the content.</span>
+</span><span id="Messenger.subscribe_durable_with_ack-133"><a href="#Messenger.subscribe_durable_with_ack-133"><span class="linenos">133</span></a>
+</span><span id="Messenger.subscribe_durable_with_ack-134"><a href="#Messenger.subscribe_durable_with_ack-134"><span class="linenos">134</span></a><span class="sd">        Args:</span>
+</span><span id="Messenger.subscribe_durable_with_ack-135"><a href="#Messenger.subscribe_durable_with_ack-135"><span class="linenos">135</span></a><span class="sd">          subject: Subject that the subscriber will observe.</span>
+</span><span id="Messenger.subscribe_durable_with_ack-136"><a href="#Messenger.subscribe_durable_with_ack-136"><span class="linenos">136</span></a><span class="sd">          callback: a Callable function, that the subscriber will call.</span>
+</span><span id="Messenger.subscribe_durable_with_ack-137"><a href="#Messenger.subscribe_durable_with_ack-137"><span class="linenos">137</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 

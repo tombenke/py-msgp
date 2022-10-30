@@ -1,4 +1,4 @@
-"""Test the rpc module"""
+"""An example for the RPCClient component of the RPC module including tracing with Open Telemetry"""
 
 import asyncio
 from loguru import logger
@@ -15,7 +15,13 @@ from nats_messenger.messenger import Messenger
 
 
 async def client():
-    """Start an RPCClient"""
+    """
+    Run RPCClient with OTEL instrumentation.
+
+    This function demonstrates how to instrument Open Telementry,
+    then create an instance of the client component of the RPC module,
+    and make a call to the RPC server.
+    """
 
     # Configure the OTEL SDK
     oti = OTI(

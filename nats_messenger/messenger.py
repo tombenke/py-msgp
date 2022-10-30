@@ -210,6 +210,11 @@ class Messenger(messenger.Messenger):
           subject: Subject to which the request will be sent.
           payload: Message data.
           timeout: Timeout in seconds, until the request waits for the response.
+          headers: The key-value pairs of the request headers
+
+        Return:
+          - payload: The payload of the response
+          - headers: The key-value pairs of the response headers
         """
         self.logger.debug(f"Send request {subject} with payload '{payload}'")
         response = await self.nats_conn.request(

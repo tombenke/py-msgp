@@ -1,4 +1,4 @@
-"""Test the rpc module"""
+"""An example for the RPCServer component of the RPC module including tracing with Open Telemetry"""
 
 import asyncio
 from loguru import logger
@@ -13,7 +13,13 @@ from rpc.examples.config import (
 
 
 async def server():
-    """Start an RPCServer"""
+    """
+    Run RPCServer with OTEL instrumentation.
+
+    This function demonstrates how to instrument Open Telementry,
+    then create an instance of the server component of the RPC module,
+    that serves the incoming calls from an RPC client component.
+    """
 
     # Configure the OTEL SDK
     oti = OTI(

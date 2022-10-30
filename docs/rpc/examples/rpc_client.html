@@ -36,7 +36,7 @@
     </ul>
 
 
-            <footer>py-msgp 9de2f58</footer>
+            <footer>py-msgp e7858f5</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
             built with <span class="visually-hidden">pdoc</span><img
@@ -50,14 +50,14 @@
                     <h1 class="modulename">
 <a href="./../../rpc.html">rpc</a><wbr>.<a href="./../examples.html">examples</a><wbr>.rpc_client    </h1>
 
-                        <div class="docstring"><p>Test the rpc module</p>
+                        <div class="docstring"><p>An example for the RPCClient component of the RPC module including tracing with Open Telemetry</p>
 </div>
 
                         <input id="mod-rpc_client-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-rpc_client-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;Test the rpc module&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;An example for the RPCClient component of the RPC module including tracing with Open Telemetry&quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span> <span class="nn">asyncio</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
@@ -74,44 +74,52 @@
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="k">async</span> <span class="k">def</span> <span class="nf">client</span><span class="p">():</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="sd">&quot;&quot;&quot;Start an RPCClient&quot;&quot;&quot;</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="c1"># Configure the OTEL SDK</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="n">oti</span> <span class="o">=</span> <span class="n">OTI</span><span class="p">(</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="n">OTIConfig</span><span class="p">(</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>            <span class="n">service_name</span><span class="o">=</span><span class="s2">&quot;rpc_client&quot;</span><span class="p">,</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>            <span class="n">service_namespace</span><span class="o">=</span><span class="s2">&quot;examples&quot;</span><span class="p">,</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>            <span class="n">service_instance_id</span><span class="o">=</span><span class="s2">&quot;rpcc_0&quot;</span><span class="p">,</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>            <span class="n">service_version</span><span class="o">=</span><span class="s2">&quot;v1.0.0&quot;</span><span class="p">,</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>            <span class="n">exporter_config</span><span class="o">=</span><span class="n">ExporterConfig</span><span class="p">(</span><span class="n">exporter_type</span><span class="o">=</span><span class="s2">&quot;OTELGRPC&quot;</span><span class="p">),</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>            <span class="c1"># exporter_config=ExporterConfig(exporter_type=&quot;STDOUT&quot;),</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>            <span class="n">sampling_config</span><span class="o">=</span><span class="n">SamplingConfig</span><span class="p">(</span><span class="n">trace_sampling_type</span><span class="o">=</span><span class="s2">&quot;ALWAYS&quot;</span><span class="p">),</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="p">)</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="p">)</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="c1"># Setup the client</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="n">rpc_client</span> <span class="o">=</span> <span class="n">RPCClient</span><span class="p">(</span><span class="n">Messenger</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">RPC_CLIENT_ID</span><span class="p">))</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="c1"># Call the server via the client</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Use client.call()&quot;</span><span class="p">)</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">response</span><span class="p">,</span> <span class="n">response_headers</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="n">TEST_TOPIC</span><span class="p">,</span> <span class="n">TEST_PAYLOAD</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">TEST_HEADERS</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="p">)</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">    Run RPCClient with OTEL instrumentation.</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">    This function demonstrates how to instrument Open Telementry,</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">    then create an instance of the client component of the RPC module,</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">    and make a call to the RPC server.</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="c1"># Configure the OTEL SDK</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="n">oti</span> <span class="o">=</span> <span class="n">OTI</span><span class="p">(</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="n">OTIConfig</span><span class="p">(</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>            <span class="n">service_name</span><span class="o">=</span><span class="s2">&quot;rpc_client&quot;</span><span class="p">,</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>            <span class="n">service_namespace</span><span class="o">=</span><span class="s2">&quot;examples&quot;</span><span class="p">,</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>            <span class="n">service_instance_id</span><span class="o">=</span><span class="s2">&quot;rpcc_0&quot;</span><span class="p">,</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>            <span class="n">service_version</span><span class="o">=</span><span class="s2">&quot;v1.0.0&quot;</span><span class="p">,</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>            <span class="n">exporter_config</span><span class="o">=</span><span class="n">ExporterConfig</span><span class="p">(</span><span class="n">exporter_type</span><span class="o">=</span><span class="s2">&quot;OTELGRPC&quot;</span><span class="p">),</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>            <span class="c1"># exporter_config=ExporterConfig(exporter_type=&quot;STDOUT&quot;),</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>            <span class="n">sampling_config</span><span class="o">=</span><span class="n">SamplingConfig</span><span class="p">(</span><span class="n">trace_sampling_type</span><span class="o">=</span><span class="s2">&quot;ALWAYS&quot;</span><span class="p">),</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="p">)</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="p">)</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="c1"># Setup the client</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="n">rpc_client</span> <span class="o">=</span> <span class="n">RPCClient</span><span class="p">(</span><span class="n">Messenger</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">RPC_CLIENT_ID</span><span class="p">))</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="c1"># Wait for service function callback</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results of service function callback: payload: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">, headers: </span><span class="si">{</span><span class="n">response_headers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="c1"># Shut down the server and the client</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Close RPC client&quot;</span><span class="p">)</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="c1"># Shut down the OTEL SDK</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="n">oti</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="c1"># Call the server via the client</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Use client.call()&quot;</span><span class="p">)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="n">response</span><span class="p">,</span> <span class="n">response_headers</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="n">TEST_TOPIC</span><span class="p">,</span> <span class="n">TEST_PAYLOAD</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">TEST_HEADERS</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="p">)</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="c1"># Wait for service function callback</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>        <span class="sa">f</span><span class="s2">&quot;Results of service function callback: payload: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">, headers: </span><span class="si">{</span><span class="n">response_headers</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="p">)</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">client</span><span class="p">())</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="c1"># Shut down the server and the client</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Close RPC client&quot;</span><span class="p">)</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="c1"># Shut down the OTEL SDK</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>    <span class="n">oti</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">client</span><span class="p">())</span>
 </span></pre></div>
 
 
@@ -128,44 +136,56 @@
     </div>
     <a class="headerlink" href="#client"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="client-18"><a href="#client-18"><span class="linenos">18</span></a><span class="k">async</span> <span class="k">def</span> <span class="nf">client</span><span class="p">():</span>
-</span><span id="client-19"><a href="#client-19"><span class="linenos">19</span></a>    <span class="sd">&quot;&quot;&quot;Start an RPCClient&quot;&quot;&quot;</span>
-</span><span id="client-20"><a href="#client-20"><span class="linenos">20</span></a>
-</span><span id="client-21"><a href="#client-21"><span class="linenos">21</span></a>    <span class="c1"># Configure the OTEL SDK</span>
-</span><span id="client-22"><a href="#client-22"><span class="linenos">22</span></a>    <span class="n">oti</span> <span class="o">=</span> <span class="n">OTI</span><span class="p">(</span>
-</span><span id="client-23"><a href="#client-23"><span class="linenos">23</span></a>        <span class="n">OTIConfig</span><span class="p">(</span>
-</span><span id="client-24"><a href="#client-24"><span class="linenos">24</span></a>            <span class="n">service_name</span><span class="o">=</span><span class="s2">&quot;rpc_client&quot;</span><span class="p">,</span>
-</span><span id="client-25"><a href="#client-25"><span class="linenos">25</span></a>            <span class="n">service_namespace</span><span class="o">=</span><span class="s2">&quot;examples&quot;</span><span class="p">,</span>
-</span><span id="client-26"><a href="#client-26"><span class="linenos">26</span></a>            <span class="n">service_instance_id</span><span class="o">=</span><span class="s2">&quot;rpcc_0&quot;</span><span class="p">,</span>
-</span><span id="client-27"><a href="#client-27"><span class="linenos">27</span></a>            <span class="n">service_version</span><span class="o">=</span><span class="s2">&quot;v1.0.0&quot;</span><span class="p">,</span>
-</span><span id="client-28"><a href="#client-28"><span class="linenos">28</span></a>            <span class="n">exporter_config</span><span class="o">=</span><span class="n">ExporterConfig</span><span class="p">(</span><span class="n">exporter_type</span><span class="o">=</span><span class="s2">&quot;OTELGRPC&quot;</span><span class="p">),</span>
-</span><span id="client-29"><a href="#client-29"><span class="linenos">29</span></a>            <span class="c1"># exporter_config=ExporterConfig(exporter_type=&quot;STDOUT&quot;),</span>
-</span><span id="client-30"><a href="#client-30"><span class="linenos">30</span></a>            <span class="n">sampling_config</span><span class="o">=</span><span class="n">SamplingConfig</span><span class="p">(</span><span class="n">trace_sampling_type</span><span class="o">=</span><span class="s2">&quot;ALWAYS&quot;</span><span class="p">),</span>
-</span><span id="client-31"><a href="#client-31"><span class="linenos">31</span></a>        <span class="p">)</span>
-</span><span id="client-32"><a href="#client-32"><span class="linenos">32</span></a>    <span class="p">)</span>
-</span><span id="client-33"><a href="#client-33"><span class="linenos">33</span></a>
-</span><span id="client-34"><a href="#client-34"><span class="linenos">34</span></a>    <span class="c1"># Setup the client</span>
-</span><span id="client-35"><a href="#client-35"><span class="linenos">35</span></a>    <span class="n">rpc_client</span> <span class="o">=</span> <span class="n">RPCClient</span><span class="p">(</span><span class="n">Messenger</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">RPC_CLIENT_ID</span><span class="p">))</span>
-</span><span id="client-36"><a href="#client-36"><span class="linenos">36</span></a>    <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span id="client-37"><a href="#client-37"><span class="linenos">37</span></a>
-</span><span id="client-38"><a href="#client-38"><span class="linenos">38</span></a>    <span class="c1"># Call the server via the client</span>
-</span><span id="client-39"><a href="#client-39"><span class="linenos">39</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Use client.call()&quot;</span><span class="p">)</span>
-</span><span id="client-40"><a href="#client-40"><span class="linenos">40</span></a>    <span class="n">response</span><span class="p">,</span> <span class="n">response_headers</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
-</span><span id="client-41"><a href="#client-41"><span class="linenos">41</span></a>        <span class="n">TEST_TOPIC</span><span class="p">,</span> <span class="n">TEST_PAYLOAD</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">TEST_HEADERS</span>
-</span><span id="client-42"><a href="#client-42"><span class="linenos">42</span></a>    <span class="p">)</span>
+</span><span id="client-19"><a href="#client-19"><span class="linenos">19</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="client-20"><a href="#client-20"><span class="linenos">20</span></a><span class="sd">    Run RPCClient with OTEL instrumentation.</span>
+</span><span id="client-21"><a href="#client-21"><span class="linenos">21</span></a>
+</span><span id="client-22"><a href="#client-22"><span class="linenos">22</span></a><span class="sd">    This function demonstrates how to instrument Open Telementry,</span>
+</span><span id="client-23"><a href="#client-23"><span class="linenos">23</span></a><span class="sd">    then create an instance of the client component of the RPC module,</span>
+</span><span id="client-24"><a href="#client-24"><span class="linenos">24</span></a><span class="sd">    and make a call to the RPC server.</span>
+</span><span id="client-25"><a href="#client-25"><span class="linenos">25</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="client-26"><a href="#client-26"><span class="linenos">26</span></a>
+</span><span id="client-27"><a href="#client-27"><span class="linenos">27</span></a>    <span class="c1"># Configure the OTEL SDK</span>
+</span><span id="client-28"><a href="#client-28"><span class="linenos">28</span></a>    <span class="n">oti</span> <span class="o">=</span> <span class="n">OTI</span><span class="p">(</span>
+</span><span id="client-29"><a href="#client-29"><span class="linenos">29</span></a>        <span class="n">OTIConfig</span><span class="p">(</span>
+</span><span id="client-30"><a href="#client-30"><span class="linenos">30</span></a>            <span class="n">service_name</span><span class="o">=</span><span class="s2">&quot;rpc_client&quot;</span><span class="p">,</span>
+</span><span id="client-31"><a href="#client-31"><span class="linenos">31</span></a>            <span class="n">service_namespace</span><span class="o">=</span><span class="s2">&quot;examples&quot;</span><span class="p">,</span>
+</span><span id="client-32"><a href="#client-32"><span class="linenos">32</span></a>            <span class="n">service_instance_id</span><span class="o">=</span><span class="s2">&quot;rpcc_0&quot;</span><span class="p">,</span>
+</span><span id="client-33"><a href="#client-33"><span class="linenos">33</span></a>            <span class="n">service_version</span><span class="o">=</span><span class="s2">&quot;v1.0.0&quot;</span><span class="p">,</span>
+</span><span id="client-34"><a href="#client-34"><span class="linenos">34</span></a>            <span class="n">exporter_config</span><span class="o">=</span><span class="n">ExporterConfig</span><span class="p">(</span><span class="n">exporter_type</span><span class="o">=</span><span class="s2">&quot;OTELGRPC&quot;</span><span class="p">),</span>
+</span><span id="client-35"><a href="#client-35"><span class="linenos">35</span></a>            <span class="c1"># exporter_config=ExporterConfig(exporter_type=&quot;STDOUT&quot;),</span>
+</span><span id="client-36"><a href="#client-36"><span class="linenos">36</span></a>            <span class="n">sampling_config</span><span class="o">=</span><span class="n">SamplingConfig</span><span class="p">(</span><span class="n">trace_sampling_type</span><span class="o">=</span><span class="s2">&quot;ALWAYS&quot;</span><span class="p">),</span>
+</span><span id="client-37"><a href="#client-37"><span class="linenos">37</span></a>        <span class="p">)</span>
+</span><span id="client-38"><a href="#client-38"><span class="linenos">38</span></a>    <span class="p">)</span>
+</span><span id="client-39"><a href="#client-39"><span class="linenos">39</span></a>
+</span><span id="client-40"><a href="#client-40"><span class="linenos">40</span></a>    <span class="c1"># Setup the client</span>
+</span><span id="client-41"><a href="#client-41"><span class="linenos">41</span></a>    <span class="n">rpc_client</span> <span class="o">=</span> <span class="n">RPCClient</span><span class="p">(</span><span class="n">Messenger</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">RPC_CLIENT_ID</span><span class="p">))</span>
+</span><span id="client-42"><a href="#client-42"><span class="linenos">42</span></a>    <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 </span><span id="client-43"><a href="#client-43"><span class="linenos">43</span></a>
-</span><span id="client-44"><a href="#client-44"><span class="linenos">44</span></a>    <span class="c1"># Wait for service function callback</span>
-</span><span id="client-45"><a href="#client-45"><span class="linenos">45</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results of service function callback: payload: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">, headers: </span><span class="si">{</span><span class="n">response_headers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="client-46"><a href="#client-46"><span class="linenos">46</span></a>
-</span><span id="client-47"><a href="#client-47"><span class="linenos">47</span></a>    <span class="c1"># Shut down the server and the client</span>
-</span><span id="client-48"><a href="#client-48"><span class="linenos">48</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Close RPC client&quot;</span><span class="p">)</span>
-</span><span id="client-49"><a href="#client-49"><span class="linenos">49</span></a>    <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="client-50"><a href="#client-50"><span class="linenos">50</span></a>
-</span><span id="client-51"><a href="#client-51"><span class="linenos">51</span></a>    <span class="c1"># Shut down the OTEL SDK</span>
-</span><span id="client-52"><a href="#client-52"><span class="linenos">52</span></a>    <span class="n">oti</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+</span><span id="client-44"><a href="#client-44"><span class="linenos">44</span></a>    <span class="c1"># Call the server via the client</span>
+</span><span id="client-45"><a href="#client-45"><span class="linenos">45</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Use client.call()&quot;</span><span class="p">)</span>
+</span><span id="client-46"><a href="#client-46"><span class="linenos">46</span></a>    <span class="n">response</span><span class="p">,</span> <span class="n">response_headers</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+</span><span id="client-47"><a href="#client-47"><span class="linenos">47</span></a>        <span class="n">TEST_TOPIC</span><span class="p">,</span> <span class="n">TEST_PAYLOAD</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">TEST_HEADERS</span>
+</span><span id="client-48"><a href="#client-48"><span class="linenos">48</span></a>    <span class="p">)</span>
+</span><span id="client-49"><a href="#client-49"><span class="linenos">49</span></a>
+</span><span id="client-50"><a href="#client-50"><span class="linenos">50</span></a>    <span class="c1"># Wait for service function callback</span>
+</span><span id="client-51"><a href="#client-51"><span class="linenos">51</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+</span><span id="client-52"><a href="#client-52"><span class="linenos">52</span></a>        <span class="sa">f</span><span class="s2">&quot;Results of service function callback: payload: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">, headers: </span><span class="si">{</span><span class="n">response_headers</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="client-53"><a href="#client-53"><span class="linenos">53</span></a>    <span class="p">)</span>
+</span><span id="client-54"><a href="#client-54"><span class="linenos">54</span></a>
+</span><span id="client-55"><a href="#client-55"><span class="linenos">55</span></a>    <span class="c1"># Shut down the server and the client</span>
+</span><span id="client-56"><a href="#client-56"><span class="linenos">56</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Close RPC client&quot;</span><span class="p">)</span>
+</span><span id="client-57"><a href="#client-57"><span class="linenos">57</span></a>    <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="client-58"><a href="#client-58"><span class="linenos">58</span></a>
+</span><span id="client-59"><a href="#client-59"><span class="linenos">59</span></a>    <span class="c1"># Shut down the OTEL SDK</span>
+</span><span id="client-60"><a href="#client-60"><span class="linenos">60</span></a>    <span class="n">oti</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Start an RPCClient</p>
+            <div class="docstring"><p>Run RPCClient with OTEL instrumentation.</p>
+
+<p>This function demonstrates how to instrument Open Telementry,
+then create an instance of the client component of the RPC module,
+and make a call to the RPC server.</p>
 </div>
 
 

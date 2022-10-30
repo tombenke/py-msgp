@@ -50,7 +50,7 @@ class Messenger(ABC):
     @abstractmethod
     async def request(
         self, subject: str, payload: bytes, timeout: float, headers: Optional[dict]
-    ):
+    ) -> tuple[bytes, dict]:
         """
         Send `payload` as a request message through the `subject` topic and expects a response until `timeout`.
         Returns with a future that is the response.
@@ -59,6 +59,11 @@ class Messenger(ABC):
           subject: Subject to which the request will be sent.
           payload: Message data.
           timeout: Timeout in seconds, until the request waits for the response.
+          headers: The key-value pairs of the request headers
+
+        Return:
+          - payload: The payload of the response
+          - headers: The key-value pairs of the response headers
         """
 
     @abstractmethod
