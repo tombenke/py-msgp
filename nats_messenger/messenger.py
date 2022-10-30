@@ -201,7 +201,7 @@ class Messenger(messenger.Messenger):
         payload: bytes,
         timeout: float,
         headers: Optional[dict] = None,
-    ):
+    ) -> tuple[bytes, dict]:
         """
         Send `payload` as a request message through the `subject` topic and expects a response until `timeout`.
         Returns with a future that is the response.
@@ -216,9 +216,11 @@ class Messenger(messenger.Messenger):
             subject=subject, payload=payload, timeout=timeout, headers=headers
         )
         self.logger.debug(f"got response {response}")
-        return response.data
+        return response.data, response.headers
 
-    async def response(self, subject: str, service_fun: Callable[[bytes, dict], None]):
+    async def response(
+        self, subject: str, service_fun: Callable[[bytes, dict], tuple[bytes, dict]]
+    ):
         """
         Subscribes to the `subject` topic, and calls the `service_fun` call-back function
         with the inbound messages, then respond with the return value of the `service` function.
@@ -230,11 +232,19 @@ class Messenger(messenger.Messenger):
 
         async def nats_callback(msg):
             self.logger.debug(f"Call service function with '{msg}'")
-            service_response = await service_fun(msg.data, msg.headers)
-            self.logger.debug(f"Respond with '{service_response}'")
+            service_response, service_response_headers = await service_fun(
+                msg.data, msg.headers
+            )
+            self.logger.debug(
+                f"Respond with payload: '{service_response}', headers: {service_response_headers}"
+            )
             if service_response is None:
                 service_response = b""
-            await self.nats_conn.publish(subject=msg.reply, payload=service_response)
+            await self.nats_conn.publish(
+                subject=msg.reply,
+                payload=service_response,
+                headers=service_response_headers,
+            )
 
         subscription = await self.nats_conn.subscribe(subject=subject, cb=nats_callback)
         subs = Subscriber(self.nats_conn, subscription)

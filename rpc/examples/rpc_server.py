@@ -33,12 +33,12 @@ async def server():
     rpc_server = RPCServer(Messenger(URL, logger, name=RPC_SERVER_ID))
     await rpc_server.open()
 
-    async def service_fun(payload: bytes, headers: dict) -> bytes:
+    async def service_fun(payload: bytes, headers: dict) -> tuple[bytes, dict]:
         logger.debug(
-            f"Service function is called with message: '{payload}' with headers: {headers}"
+            f"Service function is called with payload: '{payload}' with headers: {headers}"
         )
         # stop_server.set_result(None)
-        return b"service_fun response"
+        return b"service_fun response", headers
 
     logger.debug("RPC server start listening")
     await rpc_server.listen(TEST_TOPIC, service_fun=service_fun)

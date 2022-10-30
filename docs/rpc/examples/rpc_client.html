@@ -36,7 +36,7 @@
     </ul>
 
 
-            <footer>py-msgp fe65f08</footer>
+            <footer>py-msgp 9de2f58</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
             built with <span class="visually-hidden">pdoc</span><img
@@ -95,12 +95,12 @@
 </span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="c1"># Call the server via the client</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Use client.call()&quot;</span><span class="p">)</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">response</span><span class="p">,</span> <span class="n">response_headers</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="n">TEST_TOPIC</span><span class="p">,</span> <span class="n">TEST_PAYLOAD</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">TEST_HEADERS</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="p">)</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
 </span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="c1"># Wait for service function callback</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results of service function callback: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results of service function callback: payload: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">, headers: </span><span class="si">{</span><span class="n">response_headers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
 </span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="c1"># Shut down the server and the client</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Close RPC client&quot;</span><span class="p">)</span>
@@ -149,12 +149,12 @@
 </span><span id="client-37"><a href="#client-37"><span class="linenos">37</span></a>
 </span><span id="client-38"><a href="#client-38"><span class="linenos">38</span></a>    <span class="c1"># Call the server via the client</span>
 </span><span id="client-39"><a href="#client-39"><span class="linenos">39</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Use client.call()&quot;</span><span class="p">)</span>
-</span><span id="client-40"><a href="#client-40"><span class="linenos">40</span></a>    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+</span><span id="client-40"><a href="#client-40"><span class="linenos">40</span></a>    <span class="n">response</span><span class="p">,</span> <span class="n">response_headers</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rpc_client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
 </span><span id="client-41"><a href="#client-41"><span class="linenos">41</span></a>        <span class="n">TEST_TOPIC</span><span class="p">,</span> <span class="n">TEST_PAYLOAD</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">TEST_HEADERS</span>
 </span><span id="client-42"><a href="#client-42"><span class="linenos">42</span></a>    <span class="p">)</span>
 </span><span id="client-43"><a href="#client-43"><span class="linenos">43</span></a>
 </span><span id="client-44"><a href="#client-44"><span class="linenos">44</span></a>    <span class="c1"># Wait for service function callback</span>
-</span><span id="client-45"><a href="#client-45"><span class="linenos">45</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results of service function callback: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="client-45"><a href="#client-45"><span class="linenos">45</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results of service function callback: payload: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">, headers: </span><span class="si">{</span><span class="n">response_headers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span><span id="client-46"><a href="#client-46"><span class="linenos">46</span></a>
 </span><span id="client-47"><a href="#client-47"><span class="linenos">47</span></a>    <span class="c1"># Shut down the server and the client</span>
 </span><span id="client-48"><a href="#client-48"><span class="linenos">48</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Close RPC client&quot;</span><span class="p">)</span>

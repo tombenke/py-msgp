@@ -39,7 +39,7 @@ class RPCTestCase(unittest.TestCase):
                 total_messages += 1
                 if total_messages >= 1:
                     callback_called.set_result(None)
-                return service_fun_response
+                return service_fun_response, headers
 
             logger.debug("RPC server start listening")
             await rpc_server.listen(TEST_TOPIC, service_fun=service_fun)
@@ -50,7 +50,9 @@ class RPCTestCase(unittest.TestCase):
 
             # Call the server via the client
             logger.debug("Use client.call()")
-            response = await rpc_client.call(TEST_TOPIC, TEST_PAYLOAD, 1.0)
+            response, response_headers = await rpc_client.call(
+                TEST_TOPIC, TEST_PAYLOAD, 1.0
+            )
             self.assertEqual(service_fun_response, response)
 
             logger.debug("Wait for service function callback")

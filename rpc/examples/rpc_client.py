@@ -36,12 +36,14 @@ async def client():
 
     # Call the server via the client
     logger.debug("Use client.call()")
-    response = await rpc_client.call(
+    response, response_headers = await rpc_client.call(
         TEST_TOPIC, TEST_PAYLOAD, 1.0, headers=TEST_HEADERS
     )
 
     # Wait for service function callback
-    logger.debug(f"Results of service function callback: {response}")
+    logger.debug(
+        f"Results of service function callback: payload: {response}, headers: {response_headers}"
+    )
 
     # Shut down the server and the client
     logger.debug("Close RPC client")

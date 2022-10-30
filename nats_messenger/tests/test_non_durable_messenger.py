@@ -64,7 +64,7 @@ class MessengerNonDurableTestCase(unittest.IsolatedAsyncioTestCase):
             callback_called = asyncio.Future()
             service_fun_response = b"service_fun response"
 
-            async def service_fun(payload: bytes, headers: dict) -> bytes:
+            async def service_fun(payload: bytes, headers: dict) -> tuple[bytes, dict]:
                 nonlocal total_messages
                 nonlocal callback_called
                 logger.debug(
@@ -75,18 +75,19 @@ class MessengerNonDurableTestCase(unittest.IsolatedAsyncioTestCase):
                 total_messages += 1
                 if total_messages >= 2:
                     callback_called.set_result(None)
-                return service_fun_response
+                return service_fun_response, TEST_HEADERS
 
             subscriber = await messenger.response(TEST_TOPIC, service_fun=service_fun)
 
             logger.debug("Request messages")
-            response = await messenger.request(
+            response, response_headers = await messenger.request(
                 TEST_TOPIC, TEST_PAYLOAD, 1.0, headers=TEST_HEADERS
             )
-            response = await messenger.request(
+            response, response_headers = await messenger.request(
                 TEST_TOPIC, TEST_PAYLOAD, 1.0, headers=TEST_HEADERS
             )
             self.assertEqual(service_fun_response, response)
+            self.assertEqual(TEST_HEADERS, response_headers)
 
             logger.debug("Wait for requests")
             await asyncio.wait_for(callback_called, 1)

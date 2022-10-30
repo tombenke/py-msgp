@@ -48,7 +48,9 @@ class RPCServer:
         """
 
         def service_fun_wrapper(service_fun):
-            async def service_fun_wrapped(payload: bytes, headers: dict) -> bytes:
+            async def service_fun_wrapped(
+                payload: bytes, headers: dict
+            ) -> {bytes, dict}:
                 tracer = trace.get_tracer(__name__)
                 self.logger.debug(f"headers with context: {headers}")
                 propagator = TraceContextTextMapPropagator()
@@ -68,8 +70,8 @@ class RPCServer:
                                 "log.message": f"RPC server service function call through the {subject} subject",
                             },
                         )
-                    response = await service_fun(payload, headers)
-                return response
+                    response, new_headers = await service_fun(payload, headers)
+                return response, new_headers
 
             return service_fun_wrapped
 
