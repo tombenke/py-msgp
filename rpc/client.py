@@ -41,7 +41,7 @@ class RPCClient:
         payload: bytes,
         timeout: float,
         headers: Optional[dict] = None,
-    ) -> bytes:
+    ) -> tuple[bytes, dict]:
         """
         Provides the client endpoint with a raw request
         to call the server function at the server side of the RPC connection.
@@ -71,7 +71,7 @@ class RPCClient:
                 # Write the current context into the carrier.
                 propagator.inject(headers)
                 self.logger.debug(f"carrier: {headers}")
-            response = await self.messenger.request(
+            response, response_headers = await self.messenger.request(
                 subject, payload, timeout, headers=headers
             )
-        return response
+        return response, response_headers
