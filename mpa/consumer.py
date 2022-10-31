@@ -18,7 +18,7 @@ class MessageConsumerActor:
         self,
         messenger: Messenger,
         inbound_subject: str,
-        actor_function: Callable[[bytes, dict], bytes],
+        actor_function: Callable[[bytes, dict], tuple[bytes, dict]],
         durable=True,
         _logger=logger,
     ):
@@ -41,7 +41,9 @@ class MessageConsumerActor:
         await self.messenger.open()
 
         def actor_fun_wrapper(actor_fun):
-            async def actor_fun_wrapped(payload: bytes, headers: dict) -> bytes:
+            async def actor_fun_wrapped(
+                payload: bytes, headers: dict
+            ) -> tuple[bytes, dict]:
                 tracer = trace.get_tracer(__name__)
                 self.logger.debug(
                     f"actor_fun_wrapped() headers with context: {headers}"
@@ -65,8 +67,8 @@ class MessageConsumerActor:
                                 "log.message": f"MPA consumer service function call through the {self.inbound_subject} subject",
                             },
                         )
-                    response = await actor_fun(payload, headers)
-                return response
+                    response, response_headers = await actor_fun(payload, headers)
+                return response, response_headers
 
             return actor_fun_wrapped
 

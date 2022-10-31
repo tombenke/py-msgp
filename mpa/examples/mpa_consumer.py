@@ -31,14 +31,14 @@ async def client():
     logger.debug("Setup the consumer actor")
     actor_function_called = asyncio.Future()
 
-    async def actor_function(payload: bytes, headers: dict) -> bytes:
+    async def actor_function(payload: bytes, headers: dict) -> tuple[bytes, dict]:
         actor_function_response = b"actor function response..."
         nonlocal actor_function_called
         logger.debug(
             f"Consumer actor_function is called with message: '{payload}' with headers: {headers}"
         )
         actor_function_called.set_result(None)
-        return actor_function_response
+        return actor_function_response, headers
 
     consumer_actor = MessageConsumerActor(
         Messenger(URL, logger, name=CONSUMER_MPA_CLIENT_ID),

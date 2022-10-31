@@ -47,11 +47,11 @@ class MessageProcessorActor:
         self.logger.debug("MessageProcessorActor.open()")
         await self.messenger.open()
 
-        async def actor_function_wrapper(payload: bytes, headers: dict) -> None:
+        async def actor_function_wrapper(
+            payload: bytes, headers: dict
+        ) -> tuple[bytes, dict]:
             outbound_payload = payload
-            outbound_headers = (
-                headers  # NOTE: May actor_function should return with modified headers
-            )
+            outbound_headers = headers
             tracer = trace.get_tracer(__name__)
             propagator = TraceContextTextMapPropagator()
             if headers is None:
@@ -72,7 +72,9 @@ class MessageProcessorActor:
                             "log.message": f"MPA processor actor function call from {self.inbound_subject} to {self.outbound_subject} subject",
                         },
                     )
-                outbound_payload = await self.actor_function(payload, headers)
+                outbound_payload, outbound_headers = await self.actor_function(
+                    payload, headers
+                )
             self.logger.debug(
                 f"MessageProcessorActor.actor_function_wrapper(payload: {payload}, headers: {headers}) ->"
                 f"'payload: {outbound_payload}, headers: {outbound_headers}'"
@@ -87,7 +89,7 @@ class MessageProcessorActor:
                 await self.messenger.publish(
                     self.outbound_subject, outbound_payload, outbound_headers
                 )
-            return outbound_payload
+            return outbound_payload, outbound_headers
 
         if self.durable_in:
             self.subscriber = await self.messenger.subscribe_durable_with_ack(

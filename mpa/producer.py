@@ -53,6 +53,7 @@ class MessageProducerActor:
         that forwards it to the outbound channel.
         """
         outbound_payload = payload
+        outbound_headers = headers
         tracer = trace.get_tracer(__name__)
         propagator = TraceContextTextMapPropagator()
         if headers is None:
@@ -71,18 +72,21 @@ class MessageProducerActor:
                         "log.message": f"MPA producer publish through {self.outbound_subject} subject",
                     },
                 )
-                self.logger.debug(f"next() headers with context: {headers}")
                 propagator.inject(headers)
-                self.logger.debug(f"carrier: {headers}")
+                self.logger.debug(f"next() headers with context: {headers}")
 
             if self.actor_function is not None:
-                outbound_payload = await self.actor_function(payload, headers=headers)
+                outbound_payload, outbound_headers = await self.actor_function(
+                    payload, headers=headers
+                )
+            else:
+                outbound_headers = headers
 
             if self.durable:
                 await self.messenger.publish_durable(
-                    self.outbound_subject, outbound_payload, headers=headers
+                    self.outbound_subject, outbound_payload, headers=outbound_headers
                 )
             else:
                 await self.messenger.publish(
-                    self.outbound_subject, outbound_payload, headers=headers
+                    self.outbound_subject, outbound_payload, headers=outbound_headers
                 )

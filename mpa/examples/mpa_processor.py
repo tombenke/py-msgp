@@ -32,14 +32,19 @@ async def client():
     logger.debug("Setup the processor actor")
     actor_function_called = asyncio.Future()
 
-    async def actor_function(payload: bytes, headers: dict) -> bytes:
-        actor_function_response = b"actor function response..."
+    async def actor_function(payload: bytes, headers: dict) -> tuple[bytes, dict]:
+        """
+        MPA processor's actor function, that receives a plain text content payload, and forwards an XML format response payload.
+        The new payload includes the original payload, and the original `content-type` header replaced with `text/xml` before forwarding.
+        """
+        actor_function_response = f'<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><text>{payload.decode()}</text>'.encode()
+        headers["content-type"] = "text/xml"
         nonlocal actor_function_called
         logger.debug(
             f"Processor actor_function is called with message: '{payload}' with headers: {headers}"
         )
         actor_function_called.set_result(None)
-        return actor_function_response
+        return actor_function_response, headers
 
     processor_actor = MessageProcessorActor(
         Messenger(URL, logger, name=PROCESSOR_MPA_CLIENT_ID),

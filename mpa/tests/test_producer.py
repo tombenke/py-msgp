@@ -43,17 +43,19 @@ class ProducerMPATestCase(unittest.TestCase):
             actor_function_called = asyncio.Future()
             actor_function_response = b"actor function response..."
 
-            async def actor_function(payload: bytes, headers: dict) -> bytes:
+            async def actor_function(
+                payload: bytes, headers: dict
+            ) -> tuple[bytes, dict]:
                 nonlocal total_messages
                 nonlocal actor_function_called
                 logger.debug(
-                    f"Producer actor_function is called with message: '{payload}' with headers: {headers}"
+                    f"Producer actor_function is called with payload: '{payload}' with headers: {headers}"
                 )
                 self.assertEqual(TEST_PAYLOAD, payload)
                 total_messages += 1
                 if total_messages >= 2:
                     actor_function_called.set_result(None)
-                return actor_function_response
+                return actor_function_response, headers
 
             producer_actor = MessageProducerActor(
                 Messenger(URL, logger, name=PRODUCER_MPA_CLIENT_ID),
@@ -148,7 +150,9 @@ class ProducerMPATestCase(unittest.TestCase):
             actor_function_called = asyncio.Future()
             actor_function_response = b"actor function response..."
 
-            async def actor_function(payload: bytes, headers: dict) -> bytes:
+            async def actor_function(
+                payload: bytes, headers: dict
+            ) -> tuple[bytes, dict]:
                 nonlocal total_messages
                 nonlocal actor_function_called
                 logger.debug(
@@ -158,7 +162,7 @@ class ProducerMPATestCase(unittest.TestCase):
                 total_messages += 1
                 if total_messages >= 2:
                     actor_function_called.set_result(None)
-                return actor_function_response
+                return actor_function_response, headers
 
             producer_actor = MessageProducerActor(
                 Messenger(URL, logger, name=PRODUCER_MPA_CLIENT_ID),

@@ -36,7 +36,7 @@
     </ul>
 
 
-            <footer>py-msgp e7858f5</footer>
+            <footer>py-msgp 79a2772</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
             built with <span class="visually-hidden">pdoc</span><img
@@ -91,37 +91,42 @@
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setup the processor actor&quot;</span><span class="p">)</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="n">actor_function_called</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">actor_function</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="n">actor_function_response</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;actor function response...&quot;</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="k">nonlocal</span> <span class="n">actor_function_called</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>            <span class="sa">f</span><span class="s2">&quot;Processor actor_function is called with message: &#39;</span><span class="si">{</span><span class="n">payload</span><span class="si">}</span><span class="s2">&#39; with headers: </span><span class="si">{</span><span class="n">headers</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="p">)</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="n">actor_function_called</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="n">actor_function_response</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="n">processor_actor</span> <span class="o">=</span> <span class="n">MessageProcessorActor</span><span class="p">(</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="n">Messenger</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">PROCESSOR_MPA_CLIENT_ID</span><span class="p">),</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="n">PROCESSOR_INBOUND_TOPIC</span><span class="p">,</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="n">PROCESSOR_OUTBOUND_TOPIC</span><span class="p">,</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>        <span class="n">actor_function</span><span class="p">,</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="n">durable_in</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="n">durable_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="p">)</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="k">await</span> <span class="n">processor_actor</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wait for actor function callback and consumer callback&quot;</span><span class="p">)</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">actor_function_called</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>    <span class="c1"># Shut down the processor actor</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="k">await</span> <span class="n">processor_actor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>    <span class="c1"># Shut down the OTEL SDK</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="n">oti</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">client</span><span class="p">())</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">actor_function</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">        MPA processor&#39;s actor function, that receives a plain text content payload, and forwards an XML format response payload.</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">        The new payload includes the original payload, and the original `content-type` header replaced with `text/xml` before forwarding.</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="n">actor_function_response</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot; ?&gt;&lt;text&gt;</span><span class="si">{</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s1">&lt;/text&gt;&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="n">headers</span><span class="p">[</span><span class="s2">&quot;content-type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;text/xml&quot;</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="k">nonlocal</span> <span class="n">actor_function_called</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>            <span class="sa">f</span><span class="s2">&quot;Processor actor_function is called with message: &#39;</span><span class="si">{</span><span class="n">payload</span><span class="si">}</span><span class="s2">&#39; with headers: </span><span class="si">{</span><span class="n">headers</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="n">actor_function_called</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="k">return</span> <span class="n">actor_function_response</span><span class="p">,</span> <span class="n">headers</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="n">processor_actor</span> <span class="o">=</span> <span class="n">MessageProcessorActor</span><span class="p">(</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="n">Messenger</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">PROCESSOR_MPA_CLIENT_ID</span><span class="p">),</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>        <span class="n">PROCESSOR_INBOUND_TOPIC</span><span class="p">,</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="n">PROCESSOR_OUTBOUND_TOPIC</span><span class="p">,</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="n">actor_function</span><span class="p">,</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="n">durable_in</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>        <span class="n">durable_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="p">)</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>    <span class="k">await</span> <span class="n">processor_actor</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wait for actor function callback and consumer callback&quot;</span><span class="p">)</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">actor_function_called</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>    <span class="c1"># Shut down the processor actor</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>    <span class="k">await</span> <span class="n">processor_actor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>    <span class="c1"># Shut down the OTEL SDK</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>    <span class="n">oti</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">client</span><span class="p">())</span>
 </span></pre></div>
 
 
@@ -156,33 +161,38 @@
 </span><span id="client-33"><a href="#client-33"><span class="linenos">33</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setup the processor actor&quot;</span><span class="p">)</span>
 </span><span id="client-34"><a href="#client-34"><span class="linenos">34</span></a>    <span class="n">actor_function_called</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
 </span><span id="client-35"><a href="#client-35"><span class="linenos">35</span></a>
-</span><span id="client-36"><a href="#client-36"><span class="linenos">36</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">actor_function</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-</span><span id="client-37"><a href="#client-37"><span class="linenos">37</span></a>        <span class="n">actor_function_response</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;actor function response...&quot;</span>
-</span><span id="client-38"><a href="#client-38"><span class="linenos">38</span></a>        <span class="k">nonlocal</span> <span class="n">actor_function_called</span>
-</span><span id="client-39"><a href="#client-39"><span class="linenos">39</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-</span><span id="client-40"><a href="#client-40"><span class="linenos">40</span></a>            <span class="sa">f</span><span class="s2">&quot;Processor actor_function is called with message: &#39;</span><span class="si">{</span><span class="n">payload</span><span class="si">}</span><span class="s2">&#39; with headers: </span><span class="si">{</span><span class="n">headers</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="client-41"><a href="#client-41"><span class="linenos">41</span></a>        <span class="p">)</span>
-</span><span id="client-42"><a href="#client-42"><span class="linenos">42</span></a>        <span class="n">actor_function_called</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="client-43"><a href="#client-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="n">actor_function_response</span>
-</span><span id="client-44"><a href="#client-44"><span class="linenos">44</span></a>
-</span><span id="client-45"><a href="#client-45"><span class="linenos">45</span></a>    <span class="n">processor_actor</span> <span class="o">=</span> <span class="n">MessageProcessorActor</span><span class="p">(</span>
-</span><span id="client-46"><a href="#client-46"><span class="linenos">46</span></a>        <span class="n">Messenger</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">PROCESSOR_MPA_CLIENT_ID</span><span class="p">),</span>
-</span><span id="client-47"><a href="#client-47"><span class="linenos">47</span></a>        <span class="n">PROCESSOR_INBOUND_TOPIC</span><span class="p">,</span>
-</span><span id="client-48"><a href="#client-48"><span class="linenos">48</span></a>        <span class="n">PROCESSOR_OUTBOUND_TOPIC</span><span class="p">,</span>
-</span><span id="client-49"><a href="#client-49"><span class="linenos">49</span></a>        <span class="n">actor_function</span><span class="p">,</span>
-</span><span id="client-50"><a href="#client-50"><span class="linenos">50</span></a>        <span class="n">durable_in</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="client-51"><a href="#client-51"><span class="linenos">51</span></a>        <span class="n">durable_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="client-52"><a href="#client-52"><span class="linenos">52</span></a>    <span class="p">)</span>
-</span><span id="client-53"><a href="#client-53"><span class="linenos">53</span></a>    <span class="k">await</span> <span class="n">processor_actor</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span id="client-54"><a href="#client-54"><span class="linenos">54</span></a>
-</span><span id="client-55"><a href="#client-55"><span class="linenos">55</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wait for actor function callback and consumer callback&quot;</span><span class="p">)</span>
-</span><span id="client-56"><a href="#client-56"><span class="linenos">56</span></a>    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">actor_function_called</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-</span><span id="client-57"><a href="#client-57"><span class="linenos">57</span></a>
-</span><span id="client-58"><a href="#client-58"><span class="linenos">58</span></a>    <span class="c1"># Shut down the processor actor</span>
-</span><span id="client-59"><a href="#client-59"><span class="linenos">59</span></a>    <span class="k">await</span> <span class="n">processor_actor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span id="client-60"><a href="#client-60"><span class="linenos">60</span></a>
-</span><span id="client-61"><a href="#client-61"><span class="linenos">61</span></a>    <span class="c1"># Shut down the OTEL SDK</span>
-</span><span id="client-62"><a href="#client-62"><span class="linenos">62</span></a>    <span class="n">oti</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+</span><span id="client-36"><a href="#client-36"><span class="linenos">36</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">actor_function</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+</span><span id="client-37"><a href="#client-37"><span class="linenos">37</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="client-38"><a href="#client-38"><span class="linenos">38</span></a><span class="sd">        MPA processor&#39;s actor function, that receives a plain text content payload, and forwards an XML format response payload.</span>
+</span><span id="client-39"><a href="#client-39"><span class="linenos">39</span></a><span class="sd">        The new payload includes the original payload, and the original `content-type` header replaced with `text/xml` before forwarding.</span>
+</span><span id="client-40"><a href="#client-40"><span class="linenos">40</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="client-41"><a href="#client-41"><span class="linenos">41</span></a>        <span class="n">actor_function_response</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot; ?&gt;&lt;text&gt;</span><span class="si">{</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="si">}</span><span class="s1">&lt;/text&gt;&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+</span><span id="client-42"><a href="#client-42"><span class="linenos">42</span></a>        <span class="n">headers</span><span class="p">[</span><span class="s2">&quot;content-type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;text/xml&quot;</span>
+</span><span id="client-43"><a href="#client-43"><span class="linenos">43</span></a>        <span class="k">nonlocal</span> <span class="n">actor_function_called</span>
+</span><span id="client-44"><a href="#client-44"><span class="linenos">44</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+</span><span id="client-45"><a href="#client-45"><span class="linenos">45</span></a>            <span class="sa">f</span><span class="s2">&quot;Processor actor_function is called with message: &#39;</span><span class="si">{</span><span class="n">payload</span><span class="si">}</span><span class="s2">&#39; with headers: </span><span class="si">{</span><span class="n">headers</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="client-46"><a href="#client-46"><span class="linenos">46</span></a>        <span class="p">)</span>
+</span><span id="client-47"><a href="#client-47"><span class="linenos">47</span></a>        <span class="n">actor_function_called</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="client-48"><a href="#client-48"><span class="linenos">48</span></a>        <span class="k">return</span> <span class="n">actor_function_response</span><span class="p">,</span> <span class="n">headers</span>
+</span><span id="client-49"><a href="#client-49"><span class="linenos">49</span></a>
+</span><span id="client-50"><a href="#client-50"><span class="linenos">50</span></a>    <span class="n">processor_actor</span> <span class="o">=</span> <span class="n">MessageProcessorActor</span><span class="p">(</span>
+</span><span id="client-51"><a href="#client-51"><span class="linenos">51</span></a>        <span class="n">Messenger</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">PROCESSOR_MPA_CLIENT_ID</span><span class="p">),</span>
+</span><span id="client-52"><a href="#client-52"><span class="linenos">52</span></a>        <span class="n">PROCESSOR_INBOUND_TOPIC</span><span class="p">,</span>
+</span><span id="client-53"><a href="#client-53"><span class="linenos">53</span></a>        <span class="n">PROCESSOR_OUTBOUND_TOPIC</span><span class="p">,</span>
+</span><span id="client-54"><a href="#client-54"><span class="linenos">54</span></a>        <span class="n">actor_function</span><span class="p">,</span>
+</span><span id="client-55"><a href="#client-55"><span class="linenos">55</span></a>        <span class="n">durable_in</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="client-56"><a href="#client-56"><span class="linenos">56</span></a>        <span class="n">durable_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="client-57"><a href="#client-57"><span class="linenos">57</span></a>    <span class="p">)</span>
+</span><span id="client-58"><a href="#client-58"><span class="linenos">58</span></a>    <span class="k">await</span> <span class="n">processor_actor</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+</span><span id="client-59"><a href="#client-59"><span class="linenos">59</span></a>
+</span><span id="client-60"><a href="#client-60"><span class="linenos">60</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wait for actor function callback and consumer callback&quot;</span><span class="p">)</span>
+</span><span id="client-61"><a href="#client-61"><span class="linenos">61</span></a>    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">actor_function_called</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+</span><span id="client-62"><a href="#client-62"><span class="linenos">62</span></a>
+</span><span id="client-63"><a href="#client-63"><span class="linenos">63</span></a>    <span class="c1"># Shut down the processor actor</span>
+</span><span id="client-64"><a href="#client-64"><span class="linenos">64</span></a>    <span class="k">await</span> <span class="n">processor_actor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="client-65"><a href="#client-65"><span class="linenos">65</span></a>
+</span><span id="client-66"><a href="#client-66"><span class="linenos">66</span></a>    <span class="c1"># Shut down the OTEL SDK</span>
+</span><span id="client-67"><a href="#client-67"><span class="linenos">67</span></a>    <span class="n">oti</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </span></pre></div>
 
 

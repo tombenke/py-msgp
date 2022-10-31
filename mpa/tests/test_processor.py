@@ -46,7 +46,9 @@ class ProcessorMPATestCase(unittest.TestCase):
             actor_function_called = asyncio.Future()
             actor_function_response = b"actor function response..."
 
-            async def actor_function(payload: bytes, headers: dict) -> bytes:
+            async def actor_function(
+                payload: bytes, headers: dict
+            ) -> tuple[bytes, dict]:
                 nonlocal total_messages
                 nonlocal actor_function_called
                 logger.debug(
@@ -56,7 +58,7 @@ class ProcessorMPATestCase(unittest.TestCase):
                 total_messages += 1
                 if total_messages >= 2:
                     actor_function_called.set_result(None)
-                return actor_function_response
+                return actor_function_response, headers
 
             processor_actor = MessageProcessorActor(
                 Messenger(URL, logger, name=PROCESSOR_MPA_CLIENT_ID),
@@ -113,7 +115,9 @@ class ProcessorMPATestCase(unittest.TestCase):
             actor_function_called = asyncio.Future()
             actor_function_response = b"actor function response..."
 
-            async def actor_function(payload: bytes, headers: dict) -> bytes:
+            async def actor_function(
+                payload: bytes, headers: dict
+            ) -> tuple[bytes, dict]:
                 nonlocal total_messages
                 nonlocal actor_function_called
                 logger.debug(
@@ -123,7 +127,7 @@ class ProcessorMPATestCase(unittest.TestCase):
                 total_messages += 1
                 if total_messages >= 2:
                     actor_function_called.set_result(None)
-                return actor_function_response
+                return actor_function_response, headers
 
             processor_actor = MessageProcessorActor(
                 Messenger(URL, logger, name=PROCESSOR_MPA_CLIENT_ID),
