@@ -23,6 +23,8 @@ This version of the package uses the NATS JetStream for durable functions.
 In case you need the [NATS streaming](https://nats.io/download/nats-io/nats-streaming-server/)
 use the older version of this package before v1.0.0.
 
+Read the [API docs](https://tombenke.github.io/py-msgp/) and see the [RPC examples](rpc/examples/) and [MPA examples](mpa/examples/) for further details on the usage of the package.
+
 ## License
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
 
