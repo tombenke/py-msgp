@@ -30,9 +30,9 @@ async def client():
             service_namespace="examples",
             service_instance_id="rpcc_0",
             service_version="v1.0.0",
-            exporter_config=ExporterConfig(exporter_type="OTELGRPC"),
+            exporter_config=ExporterConfig(exporter_type="OTLPGRPC"),
             # exporter_config=ExporterConfig(exporter_type="STDOUT"),
-            sampling_config=SamplingConfig(trace_sampling_type="ALWAYS"),
+            sampling_config=SamplingConfig(trace_sampling_type="ALWAYS_ON"),
         )
     )
 

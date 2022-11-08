@@ -36,7 +36,7 @@ DEV_REQUIREMENTS = [
     "coverage",
     "coverage-badge",
     "black",
-    "otel-inst-py >= 1.0.2",
+    "otel-inst-py >= 2.0.0",
     "pylint",
     "pdoc",
     "pydeps",
