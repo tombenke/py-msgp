@@ -111,7 +111,9 @@ class Messenger(ABC):
         """
 
     @abstractmethod
-    async def subscribe_durable(self, subject: str, callback: Callable[[bytes], None]):
+    async def subscribe_durable(
+        self, subject: str, callback: Callable[[bytes], None], durable: str
+    ):
         """
         Subscribes to the durable `subject`, and call `callback` with the received content.
         Automatically acknowledges to the subject the take-over of the message.
@@ -119,11 +121,15 @@ class Messenger(ABC):
         Args:
           subject: Subject that the subscriber will observe.
           callback: a Callable function, that the subscriber will call.
+          durable: The name of the durable consumer
         """
 
     @abstractmethod
     async def subscribe_durable_with_ack(
-        self, subject: str, callback: Callable[[bytes, Callable[[], bool]], None]
+        self,
+        subject: str,
+        callback: Callable[[bytes, Callable[[], bool]], None],
+        durable: str
     ):
         """
         Subscribes to the durable `subject`, and call `callback` with the received content.
@@ -133,4 +139,5 @@ class Messenger(ABC):
         Args:
           subject: Subject that the subscriber will observe.
           callback: a Callable function, that the subscriber will call.
+          durable: The name of the durable consumer
         """

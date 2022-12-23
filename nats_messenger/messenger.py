@@ -298,7 +298,7 @@ class Messenger(messenger.Messenger):
         await ack_handler(True)
 
     async def subscribe_durable(
-        self, subject: str, callback: Callable[[bytes, dict], None]
+        self, subject: str, callback: Callable[[bytes, dict], None], durable: str
     ):
         """
         Subscribes to the durable `subject`, and call `callback` with the received content.
@@ -307,6 +307,7 @@ class Messenger(messenger.Messenger):
         Args:
           subject: Subject that the subscriber will observe.
           callback: a Callable function, that the subscriber will call.
+          durable: The name of the durable consumer
         """
 
         async def js_callback(msg):
@@ -314,14 +315,14 @@ class Messenger(messenger.Messenger):
             await callback(msg.data, msg.headers)
 
         subscription = await self.js_conn.subscribe(
-            subject, cb=js_callback, manual_ack=False
+            subject, cb=js_callback, manual_ack=False, durable=durable
         )
         subs = Subscriber(self.js_conn, subscription)
         self.logger.debug(f"Subscribed to {subject} via subscriber: {subs}")
         return subs
 
     async def subscribe_durable_with_ack(
-        self, subject: str, callback: Callable[[bytes, dict], None]
+        self, subject: str, callback: Callable[[bytes, dict], None], durable: str
     ):
         """
         Subscribes to the durable `subject`, and call `callback` with the received content.
@@ -330,6 +331,7 @@ class Messenger(messenger.Messenger):
         Args:
           subject: Subject that the subscriber will observe.
           callback: a Callable function, that the subscriber will call.
+          durable: The name of the durable consumer
         """
 
         async def js_callback(msg):
@@ -346,6 +348,7 @@ class Messenger(messenger.Messenger):
             subject=subject,
             cb=js_callback,
             manual_ack=True,
+            durable=durable
         )
         subs = Subscriber(self.js_conn, subscription)
         self.logger.debug(f"Subscribed to {subject} via subscriber: {subs}")
