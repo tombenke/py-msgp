@@ -129,7 +129,7 @@ class Messenger(ABC):
         self,
         subject: str,
         callback: Callable[[bytes, Callable[[], bool]], None],
-        durable: str
+        durable: str,
     ):
         """
         Subscribes to the durable `subject`, and call `callback` with the received content.

@@ -345,10 +345,7 @@ class Messenger(messenger.Messenger):
                 self.logger.debug(f"message {msg}, is acknowledged")
 
         subscription = await self.js_conn.subscribe(
-            subject=subject,
-            cb=js_callback,
-            manual_ack=True,
-            durable=durable
+            subject=subject, cb=js_callback, manual_ack=True, durable=durable
         )
         subs = Subscriber(self.js_conn, subscription)
         self.logger.debug(f"Subscribed to {subject} via subscriber: {subs}")

@@ -76,7 +76,7 @@ class MessageConsumerActor:
             self.subscriber = await self.messenger.subscribe_durable_with_ack(
                 self.inbound_subject,
                 actor_fun_wrapper(self.actor_function),
-                self.durable
+                self.durable,
             )
         else:
             self.subscriber = await self.messenger.subscribe(

@@ -93,7 +93,7 @@ class MessageProcessorActor:
 
         if self.durable_in:
             self.subscriber = await self.messenger.subscribe_durable_with_ack(
-                self.inbound_subject, actor_function_wrapper
+                self.inbound_subject, actor_function_wrapper, self.durable_in
             )
         else:
             self.subscriber = await self.messenger.subscribe(

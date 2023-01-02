@@ -44,7 +44,6 @@ class ConsumerMPATestCase(unittest.TestCase):
                 Messenger(URL, logger, name=CONSUMER_MPA_CLIENT_ID),
                 INBOUND_TOPIC,
                 actor_function,
-                durable=False,
             )
             await consumer_actor.open()
 
@@ -90,7 +89,7 @@ class ConsumerMPATestCase(unittest.TestCase):
                 Messenger(URL, logger, name=CONSUMER_MPA_CLIENT_ID),
                 DURABLE_INBOUND_TOPIC,
                 actor_function,
-                durable=True,
+                durable="testconsumer",
             )
             await consumer_actor.open()
 
