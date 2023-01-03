@@ -39,7 +39,7 @@ class MessengerDurableTestCase(unittest.TestCase):
                     callback_called.set_result(None)
 
             subscriber = await messenger.subscribe_durable(
-                TEST_TOPIC_DURABLE, callback=callback
+                TEST_TOPIC_DURABLE, callback=callback, durable="testdurable"
             )
 
             logger.debug("Publish messages")
@@ -84,7 +84,7 @@ class MessengerDurableTestCase(unittest.TestCase):
                     callback_called.set_result(None)
 
             subscriber = await messenger.subscribe_durable(
-                TEST_TOPIC_DURABLE, callback=callback
+                TEST_TOPIC_DURABLE, callback=callback, durable="testdurable"
             )
 
             async def ack_handler(ack):
@@ -141,7 +141,7 @@ class MessengerDurableTestCase(unittest.TestCase):
                 return b"O.K."
 
             subscriber = await messenger.subscribe_durable_with_ack(
-                TEST_TOPIC_DURABLE, callback=callback
+                TEST_TOPIC_DURABLE, callback=callback, durable="testdurable"
             )
 
             logger.debug("Publish messages")

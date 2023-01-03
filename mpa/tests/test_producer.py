@@ -142,7 +142,9 @@ class ProducerMPATestCase(unittest.TestCase):
             consumer = Messenger(URL, logger, name=CONSUMER_CLIENT_ID)
             await consumer.open()
             await consumer.subscribe_durable(
-                DURABLE_OUTBOUND_TOPIC, callback=consumer_callback
+                DURABLE_OUTBOUND_TOPIC,
+                callback=consumer_callback,
+                durable="testproducer",
             )
 
             logger.debug("Setup the producer actor")

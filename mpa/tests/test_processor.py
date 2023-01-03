@@ -107,7 +107,9 @@ class ProcessorMPATestCase(unittest.TestCase):
             consumer = Messenger(URL, logger, name=CONSUMER_CLIENT_ID)
             await consumer.open()
             await consumer.subscribe_durable(
-                DURABLE_OUTBOUND_PROC_TOPIC, callback=consumer_callback
+                DURABLE_OUTBOUND_PROC_TOPIC,
+                callback=consumer_callback,
+                durable="testprocessor",
             )
 
             logger.debug("Setup the processor actor")
@@ -134,8 +136,8 @@ class ProcessorMPATestCase(unittest.TestCase):
                 DURABLE_INBOUND_PROC_TOPIC,
                 DURABLE_OUTBOUND_PROC_TOPIC,
                 actor_function,
-                durable_in=True,
-                durable_out=True,
+                durable_in="durable-in",
+                durable_out="durable-out",
             )
             await processor_actor.open()
 

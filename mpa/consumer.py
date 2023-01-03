@@ -19,7 +19,7 @@ class MessageConsumerActor:
         messenger: Messenger,
         inbound_subject: str,
         actor_function: Callable[[bytes, dict], tuple[bytes, dict]],
-        durable=True,
+        durable: str = None,
         _logger=logger,
     ):
         """
@@ -74,7 +74,9 @@ class MessageConsumerActor:
 
         if self.durable:
             self.subscriber = await self.messenger.subscribe_durable_with_ack(
-                self.inbound_subject, actor_fun_wrapper(self.actor_function)
+                self.inbound_subject,
+                actor_fun_wrapper(self.actor_function),
+                self.durable,
             )
         else:
             self.subscriber = await self.messenger.subscribe(
