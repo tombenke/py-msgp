@@ -67,7 +67,12 @@ class Messenger(ABC):
         """
 
     @abstractmethod
-    async def response(self, subject: str, service_fun: Callable[[bytes, dict], None]):
+    async def response(
+        self,
+        subject: str,
+        service_fun: Callable[[bytes, dict], None],
+        queue: Optional[str] = None,
+    ):
         """
         Subscribes to the `subject` topic, and calls the `service_fun` call-back function
         with the inbound messages, then respond with the return value of the `service` function.
@@ -75,6 +80,7 @@ class Messenger(ABC):
         Args:
           subject: Subject that the service as a subscriber will observe.
           service_fun: a Callable function. Its return value will be the response.
+          queue: Name of the queue group
         """
 
     # Functions for durable subjects

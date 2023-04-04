@@ -1,7 +1,7 @@
 """
 The RPCServer class, which represents the unit that can be used an RPC server via messaging.
 """
-from typing import Callable
+from typing import Callable, Optional
 from loguru import logger
 from opentelemetry import trace
 from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
@@ -40,7 +40,12 @@ class RPCServer:
 
         await self.messenger.close()
 
-    async def listen(self, subject: str, service_fun: Callable[[bytes, dict], bytes]):
+    async def listen(
+        self,
+        subject: str,
+        service_fun: Callable[[bytes, dict], bytes],
+        queue: Optional[str] = None,
+    ):
         """
         Registers a server function to a messaging subject.
         The server's function will be called when an RPCClient sends a request to this subject.
@@ -77,5 +82,5 @@ class RPCServer:
 
         self.logger.debug(f"RPCServer.listen('{subject}')")
         self.subscriber = await self.messenger.response(
-            subject, service_fun_wrapper(service_fun)
+            subject, service_fun_wrapper(service_fun), queue
         )

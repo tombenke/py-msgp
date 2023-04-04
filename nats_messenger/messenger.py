@@ -224,7 +224,10 @@ class Messenger(messenger.Messenger):
         return response.data, response.headers
 
     async def response(
-        self, subject: str, service_fun: Callable[[bytes, dict], tuple[bytes, dict]]
+        self,
+        subject: str,
+        service_fun: Callable[[bytes, dict], tuple[bytes, dict]],
+        queue: Optional[str] = None,
     ):
         """
         Subscribes to the `subject` topic, and calls the `service_fun` call-back function
@@ -233,6 +236,7 @@ class Messenger(messenger.Messenger):
         Args:
           subject: Subject that the service as a subscriber will observe.
           service_fun: a Callable function. Its return value will be the response.
+          queue: The name of the Nats queue group
         """
 
         async def nats_callback(msg):
@@ -251,7 +255,9 @@ class Messenger(messenger.Messenger):
                 headers=service_response_headers,
             )
 
-        subscription = await self.nats_conn.subscribe(subject=subject, cb=nats_callback)
+        subscription = await self.nats_conn.subscribe(
+            subject=subject, cb=nats_callback, queue=queue
+        )
         subs = Subscriber(self.nats_conn, subscription)
         self.logger.debug(f"Subscribed to {subject} via subscriber: {subs}")
         return subs
